@@ -341,3 +341,16 @@ export const positionStatistics = {
 export const positions = Object.keys(positionStatistics)
 
 export const statistics = [...new Set(Object.values(positionStatistics).flatMap((array) => array))]
+
+export const flags = {
+  Argentina: '/flags/argentina.svg',
+  Bolivia: '/flags/bolivia.svg',
+  Brasil: '/flags/brasil.svg',
+  Chile: '/flags/chile.svg',
+  Colombia: '/flags/colombia.svg',
+  Ecuador: '/flags/ecuador.svg',
+  Paraguay: '/flags/paraguay.svg',
+  Perú: '/flags/peru.svg',
+  Uruguay: '/flags/uruguay.svg',
+  Venezuela: '/flags/venezuela.svg'
+}

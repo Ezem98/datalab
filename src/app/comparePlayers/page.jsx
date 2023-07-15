@@ -7,13 +7,12 @@ import { CustomDropDown } from '../../components/dropdown/customDropDown.jsx'
 import { CustomTriggerDropDown } from '../../components/dropdown/customTriggerDropDown.jsx'
 import { ContentModal } from '../../components/contentModal.jsx'
 // import { MyDocument } from '../../../components/documentPDF.jsx'
-import flag from '../../assets/icons/flag.png'
 import dorsal from '../../assets/images/dorsal.png'
 import { Avatar } from '@nextui-org/react'
 import Image from 'next/image'
 import { RadarChart } from '../../components/charts/radarChart.jsx'
 import players from '../../constants/players.json'
-import { positions } from '../../constants/constants.js'
+import { positions, flags } from '../../constants/constants.js'
 import {
   getPlayerStatisticsPerPosition,
   getUnusedStatistics,
@@ -226,7 +225,7 @@ const ComparePlayers = ({ searchParams }) => {
         <section className='grid grid-cols-[40%_1fr] border rounded-lg'>
           <section className='flex justify-end pt-4'>
             <Avatar
-              src='/player_avatar.jpg'
+              src='/player_avatar.png'
               css={{ size: '$20' }}
               color='primary'
               bordered
@@ -250,7 +249,7 @@ const ComparePlayers = ({ searchParams }) => {
                 </p>
                 <div className='flex items-center'>
                   <Image
-                    src={flag}
+                    src={flags[basePlayer?.placeOfBirth]}
                     alt='flag'
                     width='15'
                     height='15'
@@ -277,7 +276,7 @@ const ComparePlayers = ({ searchParams }) => {
                 </p>
                 <div className='flex items-center'>
                   <Image
-                    src={flag}
+                    src={flags[basePlayer?.citizenship]}
                     alt='flag'
                     width='15'
                     height='15'
@@ -377,7 +376,7 @@ const ComparePlayers = ({ searchParams }) => {
                   </p>
                   <div className='flex items-center'>
                     <Image
-                      src={flag}
+                      src={flags[playerToCompare?.placeOfBirth]}
                       alt='flag'
                       width='15'
                       height='15'
@@ -408,7 +407,7 @@ const ComparePlayers = ({ searchParams }) => {
                   </p>
                   <div className='flex items-center'>
                     <Image
-                      src={flag}
+                      src={flags[playerToCompare?.citizenship]}
                       alt='flag'
                       width='15'
                       height='15'
@@ -445,7 +444,7 @@ const ComparePlayers = ({ searchParams }) => {
             </section>
             <section className='flex justify-start pt-4'>
               <Avatar
-                src='/player_avatar.jpg'
+                src='/player_avatar.png'
                 css={{ size: '$20' }}
                 color='primary'
                 bordered
