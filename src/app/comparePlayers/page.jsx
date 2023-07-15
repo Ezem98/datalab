@@ -337,6 +337,9 @@ const ComparePlayers = ({ searchParams }) => {
                     radius='90%'
                     indicator={indicator}
                     data={data}
+                    axisLabel
+                    symbolSize={10}
+                    fontSize={14}
                   />
                 )}
             />
@@ -346,6 +349,8 @@ const ComparePlayers = ({ searchParams }) => {
             radius='90%'
             data={data}
             indicator={indicator}
+            axisLabel
+            symbolSize={10}
           />
         </section>
         {playerToCompare && (

@@ -21,7 +21,7 @@ import dorsal from '../../../assets/images/dorsal.png'
 import flag from '../../../assets/icons/flag.png'
 import players from '../../../constants/players.json'
 import { positions } from '../../../constants/constants.js'
-import { getPlayerStatisticsPerPosition } from '../../../utils/functions.js'
+import { getPlayerStatisticsPerPosition, getSimilarPlayers } from '../../../utils/functions.js'
 import { useModal } from '../../../hooks/useModal.jsx'
 
 const PlayerInfo = ({ params }) => {
@@ -69,10 +69,13 @@ const PlayerInfo = ({ params }) => {
   const [modalTitle, setModalTitle] = useState(null)
   const [modalContent, setModalContent] = useState(null)
 
-  const { indicator, data } = getPlayerStatisticsPerPosition(
+  const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
     selectedItem.name,
-    player
+    player,
+    'primary'
   )
+
+  const similarPlayers = getSimilarPlayers(player, players, [...statistics, 'age', 'position'])
 
   const handleZoomIn = (title, content) => {
     setModalTitle(title)
@@ -210,7 +213,7 @@ const PlayerInfo = ({ params }) => {
                 onClick={() =>
                   handleZoomIn(
                     'statistics per position',
-                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} />
+                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
               />
             </div>
@@ -232,7 +235,7 @@ const PlayerInfo = ({ params }) => {
                 onClick={() =>
                   handleZoomIn(
                     'defense statistics',
-                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} />
+                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
               />
             </div>
@@ -254,7 +257,7 @@ const PlayerInfo = ({ params }) => {
                 onClick={() =>
                   handleZoomIn(
                     'aggressive statistics',
-                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} />
+                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
               />
             </div>
@@ -262,7 +265,7 @@ const PlayerInfo = ({ params }) => {
           </section>
           <section className='border p-4 flex flex-1 flex-col items-center rounded-lg overflow-y-auto'>
             <h3 className='uppercase tracking-normal'>similar players</h3>
-            <ListView items={players} />
+            <ListView items={similarPlayers.slice(0, 9)} />
           </section>
           <section className='grid grid-cols-2 grid-rows-2'>
             <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
