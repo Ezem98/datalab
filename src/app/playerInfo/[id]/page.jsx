@@ -18,9 +18,8 @@ import redCard from '../../../assets/icons/red-card.png'
 import decreaseArrow from '../../../assets/icons/decrease.png'
 import increaseArrow from '../../../assets/icons/increase.png'
 import dorsal from '../../../assets/images/dorsal.png'
-import flag from '../../../assets/icons/flag.png'
 import players from '../../../constants/players.json'
-import { positions } from '../../../constants/constants.js'
+import { positions, flags } from '../../../constants/constants.js'
 import { getPlayerStatisticsPerPosition, getSimilarPlayers } from '../../../utils/functions.js'
 import { useModal } from '../../../hooks/useModal.jsx'
 
@@ -118,7 +117,7 @@ const PlayerInfo = ({ params }) => {
           <section className='grid grid-cols-[40%_1fr] border rounded-lg'>
             <section className='flex justify-end pt-4'>
               <Avatar
-                src='/player_avatar.jpg'
+                src='/player_avatar.png'
                 css={{ size: '$20' }}
                 color='primary'
                 bordered
@@ -140,7 +139,7 @@ const PlayerInfo = ({ params }) => {
                   </p>
                   <div className='flex items-center'>
                     <Image
-                      src={flag}
+                      src={flags[placeOfBirth]}
                       alt='flag'
                       width='15'
                       height='15'
@@ -167,7 +166,7 @@ const PlayerInfo = ({ params }) => {
                   </p>
                   <div className='flex items-center'>
                     <Image
-                      src={flag}
+                      src={flags[placeOfBirth]}
                       alt='flag'
                       width='15'
                       height='15'
