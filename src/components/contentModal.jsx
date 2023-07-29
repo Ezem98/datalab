@@ -1,3 +1,4 @@
+'use client'
 import { Modal } from '@nextui-org/react'
 
 export const ContentModal = ({

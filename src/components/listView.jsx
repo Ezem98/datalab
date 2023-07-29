@@ -1,3 +1,4 @@
+'use client'
 import { Avatar } from '@nextui-org/react'
 import Link from 'next/link'
 

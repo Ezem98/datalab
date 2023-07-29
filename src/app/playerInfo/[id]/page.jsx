@@ -13,6 +13,7 @@ import { CustomDropDown } from '../../../components/dropdown/customDropDown.jsx'
 import { ListView } from '../../../components/listView.jsx'
 // import { MyDocument } from '../../../components/documentPDF.jsx'
 import { ContentModal } from '../../../components/contentModal.jsx'
+import { IconButton } from '../../../components/iconButton.jsx'
 import yellowCard from '../../../assets/icons/yellow-card.png'
 import redCard from '../../../assets/icons/red-card.png'
 import decreaseArrow from '../../../assets/icons/decrease.png'
@@ -23,9 +24,36 @@ import { positions, flags } from '../../../constants/constants.js'
 import { getPlayerStatisticsPerPosition, getSimilarPlayers } from '../../../utils/functions.js'
 import { useModal } from '../../../hooks/useModal.jsx'
 
+// export async function fetchPlayer (id) {
+//   console.log('Hi server side')
+//   // console.log({ params })
+//   const player = players.find((p) => p.key.toString() === id)
+
+//   return player
+// }
+
+// export async function generateStaticParams () {
+//   console.log('hola')
+//   return players.map(player => ({
+//     id: player.key.toString()
+//   }))
+// }
+
 const PlayerInfo = ({ params }) => {
   const { id } = params
+  const player = players.find((p) => p.key.toString() === id)
   const contentModal = useModal()
+
+  const items = positions.map((element, index) => {
+    return {
+      key: index,
+      name: element
+    }
+  })
+
+  const [selectedItem, setSelectedItem] = useState(null)
+  const [modalTitle, setModalTitle] = useState(null)
+  const [modalContent, setModalContent] = useState(null)
 
   const footer = (
     <>
@@ -41,7 +69,11 @@ const PlayerInfo = ({ params }) => {
     </>
   )
 
-  const player = players.find((p) => p.key.toString() === id)
+  // console.log({ player })
+
+  if (!player) {
+    return <p>Jugador no encontrado.</p>
+  }
 
   const {
     name,
@@ -57,29 +89,20 @@ const PlayerInfo = ({ params }) => {
     foulsPerMatch
   } = player
 
-  const items = positions.map((element, index) => {
-    return {
-      key: index,
-      name: element
-    }
-  })
-
-  const [selectedItem, setSelectedItem] = useState(items.find(item => item.name === position.split(', ')[0]))
-  const [modalTitle, setModalTitle] = useState(null)
-  const [modalContent, setModalContent] = useState(null)
+  // setSelectedItem(items.find(item => item.name === position.split(', ')[0]))
 
   const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
-    selectedItem.name,
+    selectedItem?.name ?? items.find(item => item.name === position.split(', ')[0]).name,
     player,
     'primary'
   )
 
   const similarPlayers = getSimilarPlayers(player, players, [...statistics, 'age', 'position'])
 
-  const handleZoomIn = (title, content) => {
+  const handleZoomIn = async (title, content) => {
     setModalTitle(title)
     setModalContent(content)
-    contentModal.openModal()
+    contentModal?.openModal()
   }
 
   return (
@@ -198,67 +221,88 @@ const PlayerInfo = ({ params }) => {
           </section>
           <section className='border p-4 flex flex-col justify-center items-start rounded-lg'>
             <div className='flex w-full relative'>
-              <Add
-                fontSize='26px'
-                className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-                onClick={() => {}}
-              />
+              <IconButton
+                handleClick={() => {}}
+              >
+                <Add
+                  fontSize='26px'
+                  className='absolute left-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
               <h3 className='flex-1 uppercase tracking-normal text-center'>
                 statistics per position
               </h3>
-              <Zoom
-                fontSize='26px'
-                className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-                onClick={() =>
+              <IconButton
+                handleClick={() =>
                   handleZoomIn(
                     'statistics per position',
                     <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
-              />
+              >
+                <Zoom
+                  fontSize='26px'
+                  className='absolute right-0 top-1 cursor-pointer hover:scale-110'
+
+                />
+              </IconButton>
             </div>
             <RadarChart id='position' radius='50%' indicator={indicator} data={data} />
           </section>
           <section className='border p-4 flex flex-col justify-center items-center rounded-lg'>
             <div className='flex w-full relative'>
-              <Add
-                fontSize='26px'
-                className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-                onClick={() => {}}
-              />
+              <IconButton
+                handleClick={() => {}}
+              >
+                <Add
+                  fontSize='26px'
+                  className='absolute left-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
               <h3 className='flex-1 uppercase tracking-normal text-center'>
                 defense statistics
               </h3>
-              <Zoom
-                fontSize='26px'
-                className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-                onClick={() =>
+              <IconButton
+                handleClick={() =>
                   handleZoomIn(
                     'defense statistics',
                     <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
-              />
+              >
+                <Zoom
+                  fontSize='26px'
+                  className='absolute right-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
             </div>
             <RadarChart id='defense' radius='50%' indicator={indicator} data={data} />
           </section>
           <section className='border p-4 flex flex-col justify-center items-center rounded-lg'>
             <div className='flex w-full relative'>
-              <Add
-                fontSize='26px'
-                className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-                onClick={() => {}}
-              />
+              <IconButton
+                handleClick={() => {}}
+              >
+                <Add
+                  fontSize='26px'
+                  className='absolute left-0 top-1 cursor-pointer hover:scale-110'
+
+                />
+              </IconButton>
               <h3 className='flex-1 uppercase tracking-normal text-center'>
                 aggressive statistics
               </h3>
-              <Zoom
-                fontSize='26px'
-                className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-                onClick={() =>
+              <IconButton
+                handleClick={() =>
                   handleZoomIn(
                     'aggressive statistics',
                     <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
-              />
+              >
+                <Zoom
+                  fontSize='26px'
+                  className='absolute right-0 top-1 cursor-pointer hover:scale-110'
+
+                />
+              </IconButton>
             </div>
             <RadarChart id='aggressive' radius='50%' indicator={indicator} data={data} />
           </section>
@@ -457,7 +501,7 @@ const PlayerInfo = ({ params }) => {
         <MyDocument />
       </PDFViewer> */}
       <ContentModal
-        visible={contentModal.visible}
+        visible={contentModal?.visible}
         title={modalTitle}
         content={modalContent}
         footer={footer}
