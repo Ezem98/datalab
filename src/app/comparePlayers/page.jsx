@@ -22,7 +22,9 @@ import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
 import { useModal } from '../../hooks/useModal.jsx'
 
 const ComparePlayers = ({ searchParams }) => {
-  const basePlayer = searchParams
+  console.log({ searchParams })
+  const basePlayerID = searchParams.id
+  const basePlayer = players.find((p) => p.key.toString() === basePlayerID)
   const contentModal = useModal()
 
   const items = positions.map((element, index) => {

@@ -116,10 +116,7 @@ const PlayerInfo = ({ params }) => {
         <div className='flex flex-grow-0 gap-3'>
           <Button color='secondary'>Create report</Button>
           <Link
-            href={{
-              pathname: '/comparePlayers',
-              query: player
-            }}
+            href={`/comparePlayers?id=${player.key}`}
           >
             <Button color='primary'>Compare players</Button>
           </Link>
