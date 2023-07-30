@@ -50,9 +50,7 @@ const ComparePlayers = ({ searchParams }) => {
 
   const [playerToCompare, setPlayerToCompare] = useState(null)
   const [filteredPlayers, setFilteredPlayers] = useState(players)
-  const [selectedItem, setSelectedItem] = useState(
-    items.find((item) => item.name === basePlayer?.position?.split(', ')[0])
-  )
+  const [selectedItem, setSelectedItem] = useState(null)
   const [data, setData] = useState([])
   const [indicator, setIndicator] = useState([])
   const [modalTitle, setModalTitle] = useState(null)
@@ -68,7 +66,7 @@ const ComparePlayers = ({ searchParams }) => {
       .replace(/[\u0300-\u036f]/g, '')
     const filteredItems = players
       .filter((p) => {
-        const normalizedName = p.name
+        const normalizedName = p?.name
           .normalize('NFD')
           .replace(/[\u0300-\u036f]/g, '')
         return normalizedName
@@ -88,17 +86,17 @@ const ComparePlayers = ({ searchParams }) => {
 
   const handleDeleteStat = (key) => {
     setSelectedKeys(selectedKeys.filter(item => item !== key))
-    setIndicator(indicator.filter(item => item.name !== key))
+    setIndicator(indicator.filter(item => item?.name !== key))
   }
 
   const handleOnAction = (key) => {
     const newKey = filteredPositionStatsArray[key]
     setIndicator([...indicator, newKey])
-    setSelectedKeys([...selectedKeys, newKey.name])
+    setSelectedKeys([...selectedKeys, newKey?.name])
 
-    let newBasePlayerData = data.find(item => item.name === basePlayer.name)
-    console.log(getValueByStat(basePlayer, newKey.name))
-    newBasePlayerData = { ...newBasePlayerData, value: [...newBasePlayerData.value, getValueByStat(basePlayer, newKey.name)] }
+    let newBasePlayerData = data.find(item => item?.name === basePlayer?.name)
+    console.log(getValueByStat(basePlayer, newKey?.name))
+    newBasePlayerData = { ...newBasePlayerData, value: [...newBasePlayerData.value, getValueByStat(basePlayer, newKey?.name)] }
 
     console.log('aca llego')
 
@@ -107,8 +105,8 @@ const ComparePlayers = ({ searchParams }) => {
     if (playerToCompare) {
       console.log('entre')
       newPlayerToCompareData = data.find(item => item?.name === playerToCompare?.name)
-      console.log(getValueByStat(playerToCompare, newKey.name))
-      newPlayerToCompareData = { ...newPlayerToCompareData, value: [...newPlayerToCompareData?.value, getValueByStat(playerToCompare, newKey.name)] }
+      console.log(getValueByStat(playerToCompare, newKey?.name))
+      newPlayerToCompareData = { ...newPlayerToCompareData, value: [...newPlayerToCompareData?.value, getValueByStat(playerToCompare, newKey?.name)] }
     }
     const newData = [newBasePlayerData, newPlayerToCompareData]
     setData(newData)
@@ -131,12 +129,12 @@ const ComparePlayers = ({ searchParams }) => {
 
   useEffect(() => {
     const basePlayerStatistics = getPlayerStatisticsPerPosition(
-      selectedItem.name,
+      selectedItem?.name,
       basePlayer,
       'primary'
     )
     const playerToCompareStatistics = getPlayerStatisticsPerPosition(
-      selectedItem.name,
+      selectedItem?.name,
       playerToCompare
     )
 
