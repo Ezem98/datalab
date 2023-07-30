@@ -51,7 +51,7 @@ const ComparePlayers = ({ searchParams }) => {
   const [playerToCompare, setPlayerToCompare] = useState(null)
   const [filteredPlayers, setFilteredPlayers] = useState(players)
   const [selectedItem, setSelectedItem] = useState(
-    items.find((item) => item.name === basePlayer?.position.split(', ')[0])
+    items.find((item) => item.name === basePlayer?.position?.split(', ')[0])
   )
   const [data, setData] = useState([])
   const [indicator, setIndicator] = useState([])
