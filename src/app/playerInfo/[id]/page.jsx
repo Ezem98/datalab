@@ -8,6 +8,8 @@ import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
 import { MdAddChart as Add } from 'react-icons/md'
 // import { PDFViewer } from '@react-pdf/renderer'
 import { RadarChart } from '../../../components/charts/radarChart.jsx'
+import { RingGaugeChart } from '../../../components/charts/ringGaugeChart.jsx'
+import { GradeGaugeChart } from '../../../components/charts/gradeGaugeChart.jsx'
 import { Button } from '../../../components/button.jsx'
 import { CustomDropDown } from '../../../components/dropdown/customDropDown.jsx'
 import { ListView } from '../../../components/listView.jsx'
@@ -21,7 +23,7 @@ import increaseArrow from '../../../assets/icons/increase.png'
 import dorsal from '../../../assets/images/dorsal.png'
 import players from '../../../constants/players.json'
 import { positions, flags } from '../../../constants/constants.js'
-import { getPlayerStatisticsPerPosition, getSimilarPlayers } from '../../../utils/functions.js'
+import { getPlayerStatisticsPerPosition, getSimilarPlayers, calculateAverageRating } from '../../../utils/functions.js'
 import { useModal } from '../../../hooks/useModal.jsx'
 
 // export async function fetchPlayer (id) {
@@ -69,8 +71,6 @@ const PlayerInfo = ({ params }) => {
     </>
   )
 
-  // console.log({ player })
-
   if (!player) {
     return <p>Jugador no encontrado.</p>
   }
@@ -96,6 +96,8 @@ const PlayerInfo = ({ params }) => {
     player,
     'primary'
   )
+
+  const { playerAverageRating, averageRating } = calculateAverageRating(selectedItem.name, players, player)
 
   const similarPlayers = getSimilarPlayers(player, players, [...statistics, 'age', 'position'])
 
@@ -259,13 +261,13 @@ const PlayerInfo = ({ params }) => {
                 />
               </IconButton>
               <h3 className='flex-1 uppercase tracking-normal text-center'>
-                defense statistics
+                position ranking
               </h3>
               <IconButton
                 handleClick={() =>
                   handleZoomIn(
                     'defense statistics',
-                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
+                    <GradeGaugeChart id='position' value={playerAverageRating} />
                   )}
               >
                 <Zoom
@@ -274,7 +276,10 @@ const PlayerInfo = ({ params }) => {
                 />
               </IconButton>
             </div>
-            <RadarChart id='defense' radius='50%' indicator={indicator} data={data} />
+            <h5 className='flex-1 uppercase tracking-normal text-center'>
+              average rating: {averageRating}
+            </h5>
+            <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} />
           </section>
           <section className='border p-4 flex flex-col justify-center items-center rounded-lg'>
             <div className='flex w-full relative'>
@@ -288,13 +293,13 @@ const PlayerInfo = ({ params }) => {
                 />
               </IconButton>
               <h3 className='flex-1 uppercase tracking-normal text-center'>
-                aggressive statistics
+                statistics ranking
               </h3>
               <IconButton
                 handleClick={() =>
                   handleZoomIn(
                     'aggressive statistics',
-                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
+                    <RingGaugeChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
                   )}
               >
                 <Zoom
@@ -304,7 +309,7 @@ const PlayerInfo = ({ params }) => {
                 />
               </IconButton>
             </div>
-            <RadarChart id='aggressive' radius='50%' indicator={indicator} data={data} />
+            <RingGaugeChart id='aggressive' radius='50%' indicator={indicator} data={data} />
           </section>
           <section className='border p-4 flex flex-1 flex-col items-center rounded-lg overflow-y-auto'>
             <h3 className='uppercase tracking-normal'>similar players</h3>

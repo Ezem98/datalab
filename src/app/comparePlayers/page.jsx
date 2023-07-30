@@ -205,7 +205,7 @@ const ComparePlayers = ({ searchParams }) => {
             <input
               className='rounded-xl border-transparent h-10 bg-gray-100 px-4 py-2 text-xl focus:border-primary outline-none border-2'
               placeholder='Search player'
-              type='text'
+              type='search'
               onChange={handleChange}
             />
           </CustomTriggerDropDown>

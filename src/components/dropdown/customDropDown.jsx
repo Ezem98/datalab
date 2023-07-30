@@ -1,10 +1,10 @@
 'use client'
 
 import { Dropdown } from '@nextui-org/react'
-export const CustomDropDown = ({ variant, items, css, ripple, selectedItem, setSelectedItem }) => {
+export const CustomDropDown = ({ variant, items, css, ripple, selectedItem, setSelectedItem, selectText = 'Select item' }) => {
   return (
     <Dropdown>
-      <Dropdown.Button light css={css} ripple={ripple}>{selectedItem?.name}</Dropdown.Button>
+      <Dropdown.Button light css={css} ripple={ripple}>{selectedItem?.name ?? selectText}</Dropdown.Button>
       <Dropdown.Menu aria-label='Dynamic Actions' items={items} onAction={key => setSelectedItem(items[key])} css={{ overflowY: 'scroll', maxHeight: '20vh' }}>
         {(item) => (
           <Dropdown.Item
