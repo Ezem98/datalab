@@ -3,7 +3,7 @@
 import './globals.css'
 // eslint-disable-next-line camelcase
 import { Bebas_Neue } from 'next/font/google'
-import { createTheme, NextUIProvider } from '@nextui-org/react'
+import { createTheme, NextUIProvider, useSSR } from '@nextui-org/react'
 import { colors } from '../constants/constants.js'
 import Link from 'next/link'
 import { CustomTriggerDropDown } from '../components/dropdown/customTriggerDropDown.jsx'
@@ -34,6 +34,7 @@ const theme = createTheme({
 
 const RootLayout = ({ children }) => {
   const router = useRouter()
+  const { isBrowser } = useSSR()
   const [filteredPlayers, setFilteredPlayers] = useState(players)
 
   const handleChange = (e) => {
@@ -59,40 +60,43 @@ const RootLayout = ({ children }) => {
   return (
     <html lang='en'>
       <body className={bebasNeue.className}>
-        <header className='flex justify-between items-center px-8 pt-8'>
-          <Link href='/'>
-            <h1 className='flex flex-grow-0 text-primary text-2xl tracking-normal cursor-pointer'>
-              Datamoroni
-            </h1>
-          </Link>
-          <CustomTriggerDropDown
-            key='players'
-            items={filteredPlayers}
-            ripple={false}
-            css={{ fontSize: '36px', fontWeight: 'bold' }}
-            selectedItem={null}
-            onAction={(key) => router.push(`/playerInfo/${key}`)}
-            width='20rem'
-          >
-            <input
-              className='rounded-xl border-transparent bg-gray-100 px-4 py-2 text-xl focus:border-primary outline-none border-4 w-80 transition-all duration-500'
-              placeholder='Search player'
-              type='search'
-              onChange={handleChange}
-            />
-          </CustomTriggerDropDown>
-          <div className='flex'>
-            <CustomDropDown
-              items={[]}
-              ripple={false}
-              css={{ fontSize: '24px', fontWeight: 'bold' }}
-              selectedItem=''
-              setSelectedItem={null}
-              selectText='Select database'
-            />
-          </div>
-        </header>
-        <NextUIProvider theme={theme}>{children}</NextUIProvider>
+        {isBrowser &&
+          <>
+            <header className='flex justify-between items-center px-8 pt-8'>
+              <Link href='/'>
+                <h1 className='flex flex-grow-0 text-primary text-2xl tracking-normal cursor-pointer'>
+                  Datamoroni
+                </h1>
+              </Link>
+              <CustomTriggerDropDown
+                key='players'
+                items={filteredPlayers}
+                ripple={false}
+                css={{ fontSize: '36px', fontWeight: 'bold' }}
+                selectedItem={null}
+                onAction={(key) => router.push(`/playerInfo/${key}`)}
+                width='20rem'
+              >
+                <input
+                  className='rounded-xl border-transparent bg-gray-100 px-4 py-2 text-xl focus:border-primary outline-none border-4 w-80 transition-all duration-500'
+                  placeholder='Search player'
+                  type='search'
+                  onChange={handleChange}
+                />
+              </CustomTriggerDropDown>
+              <div className='flex'>
+                <CustomDropDown
+                  items={[]}
+                  ripple={false}
+                  css={{ fontSize: '24px', fontWeight: 'bold' }}
+                  selectedItem=''
+                  setSelectedItem={null}
+                  selectText='Select database'
+                />
+              </div>
+            </header>
+            <NextUIProvider theme={theme}>{children}</NextUIProvider>
+          </>}
       </body>
     </html>
   )

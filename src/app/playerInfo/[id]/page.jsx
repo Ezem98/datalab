@@ -97,7 +97,7 @@ const PlayerInfo = ({ params }) => {
     'primary'
   )
 
-  const { playerAverageRating, averageRating } = calculateAverageRating(selectedItem.name, players, player)
+  const { playerAverageRating, averageRating } = calculateAverageRating(selectedItem?.name ?? items.find(item => item.name === position.split(', ')[0]).name, players, player)
 
   const similarPlayers = getSimilarPlayers(player, players, [...statistics, 'age', 'position'])
 
