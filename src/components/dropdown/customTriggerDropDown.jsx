@@ -11,7 +11,8 @@ export const CustomTriggerDropDown = ({
   onSelectionChange,
   selectedKeys,
   selectionMode,
-  children
+  children,
+  width
 }) => {
   return (
     <Dropdown>
@@ -20,7 +21,7 @@ export const CustomTriggerDropDown = ({
         aria-label='Dynamic Actions'
         items={items}
         onAction={onAction}
-        css={{ overflowY: 'scroll', maxHeight: '20vh' }}
+        css={{ overflowY: 'scroll', maxHeight: '20vh', minWidth: width }}
         selectionMode={selectionMode}
         selectedKeys={selectedKeys}
         onSelectionChange={onSelectionChange}

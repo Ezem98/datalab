@@ -1,4 +1,5 @@
-import { positionStatistics, statistics, colors } from '../constants/constants'
+import { positionStatistics, statistics, colors, weights } from '../constants/constants'
+import { round } from 'lodash'
 
 export const getPlayerStatisticsPerPosition = (position, player, color) => {
   if (!player) return null
@@ -122,4 +123,43 @@ export const getSimilarPlayers = (player, players, relevantFeatures) => {
 
   // Devuelve la lista de jugadores más similares
   return distances.map(d => d.player)
+}
+
+const calculateRating = (player, position) => {
+  const relevantFeatures = positionStatistics[position]
+
+  if (!player || !player.position || !position) {
+    return 0
+  }
+
+  const playerPositions = player.position.split(', ')
+
+  if (!playerPositions.includes(position)) {
+    return 0
+  }
+
+  let totalRating = 0
+
+  for (const feature of relevantFeatures) {
+    if (player[feature]) {
+      totalRating += player[feature] * weights[feature]
+    }
+  }
+
+  return totalRating
+}
+
+export const calculateAverageRating = (position, players, player) => {
+  const playersAtPosition = players.filter(p => p.position.includes(position))
+  let totalRating = 0
+
+  const playerAverageRating = round(calculateRating(player, position), 2)
+
+  for (const pap of playersAtPosition) {
+    totalRating += round(calculateRating(pap, position), 2)
+  }
+
+  const averageRating = round(totalRating / playersAtPosition.length, 2)
+
+  return { playerAverageRating, averageRating }
 }
