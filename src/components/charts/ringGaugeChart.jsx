@@ -39,7 +39,7 @@ const gaugeData = [
     }
   }
 ]
-export const RingGaugeChart = ({ id, radius, data, indicator, axisLabel = false, symbolSize = 6, fontSize = 10 }) => {
+export const RingGaugeChart = ({ id, radius, data, indicator, axisLabel = false, symbolSize = 6, fontSize = 10, width, height }) => {
   const chartRef = useRef(null)
 
   useEffect(() => {
@@ -105,5 +105,5 @@ export const RingGaugeChart = ({ id, radius, data, indicator, axisLabel = false,
     }
   }, [data, radius, indicator, fontSize, symbolSize, axisLabel])
 
-  return <div ref={chartRef} id={id} style={{ width: '100%', height: '100vh' }} />
+  return <div ref={chartRef} id={id} style={{ width, height }} />
 }

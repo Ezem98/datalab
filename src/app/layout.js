@@ -57,14 +57,15 @@ const RootLayout = ({ children }) => {
 
     setFilteredPlayers(filteredItems)
   }
+
   return (
     <html lang='en'>
       <body className={bebasNeue.className}>
-        {isBrowser &&
+        {isBrowser && (
           <>
-            <header className='flex justify-between items-center px-8 pt-8'>
+            <header className='flex justify-between items-center px-4 sm:px-8 pt-4 sm:pt-8'>
               <Link href='/'>
-                <h1 className='flex flex-grow-0 text-primary text-2xl tracking-normal cursor-pointer'>
+                <h1 className='flex flex-grow-0 text-primary text-xl sm:text-2xl tracking-normal cursor-pointer'>
                   Datamoroni
                 </h1>
               </Link>
@@ -72,13 +73,13 @@ const RootLayout = ({ children }) => {
                 key='players'
                 items={filteredPlayers}
                 ripple={false}
-                css={{ fontSize: '36px', fontWeight: 'bold' }}
+                css={{ fontSize: '20px', fontWeight: 'bold' }}
                 selectedItem={null}
                 onAction={(key) => router.push(`/playerInfo/${key}`)}
-                width='20rem'
+                width='100%'
               >
                 <input
-                  className='rounded-xl border-transparent bg-gray-100 px-4 py-2 text-xl focus:border-primary outline-none border-4 w-80 transition-all duration-500'
+                  className='rounded-xl border-transparent bg-gray-100 px-3 py-1 text-base w-80 sm:text-xl focus:border-primary outline-none border-4 transition-all duration-500'
                   placeholder='Search player'
                   type='search'
                   onChange={handleChange}
@@ -88,7 +89,7 @@ const RootLayout = ({ children }) => {
                 <CustomDropDown
                   items={[]}
                   ripple={false}
-                  css={{ fontSize: '24px', fontWeight: 'bold' }}
+                  css={{ fontSize: '16px', fontWeight: 'bold' }}
                   selectedItem=''
                   setSelectedItem={null}
                   selectText='Select database'
@@ -96,7 +97,8 @@ const RootLayout = ({ children }) => {
               </div>
             </header>
             <NextUIProvider theme={theme}>{children}</NextUIProvider>
-          </>}
+          </>
+        )}
       </body>
     </html>
   )
