@@ -3,7 +3,7 @@
 import * as echarts from 'echarts'
 import { useEffect, useRef } from 'react'
 import { colors } from '../../constants/constants'
-export const RadarChart = ({ id, radius, data, indicator, axisLabel = false, symbolSize = 6, fontSize = 10 }) => {
+export const RadarChart = ({ id, radius, data, indicator, axisLabel = false, symbolSize = 6, fontSize = 10, width, height }) => {
   const chartRef = useRef(null)
 
   useEffect(() => {
