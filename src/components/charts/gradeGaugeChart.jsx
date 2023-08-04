@@ -4,7 +4,7 @@ import * as echarts from 'echarts'
 import { useEffect, useRef } from 'react'
 import { colors } from '../../constants/constants'
 import { round } from 'lodash'
-export const GradeGaugeChart = ({ id, value, averageRating }) => {
+export const GradeGaugeChart = ({ id, value, averageRating, width, height }) => {
   const chartRef = useRef(null)
 
   useEffect(() => {
@@ -105,5 +105,5 @@ export const GradeGaugeChart = ({ id, value, averageRating }) => {
     }
   }, [value, averageRating])
 
-  return <div ref={chartRef} id={id} style={{ width: '100%', height: '100vh' }} />
+  return <div ref={chartRef} id={id} style={{ width, height }} />
 }

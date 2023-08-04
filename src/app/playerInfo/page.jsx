@@ -110,8 +110,8 @@ const PlayerInfo = () => {
 
   return (
     <div className='container mx-auto px-8 pb-8'>
-      <header className='flex justify-between items-center my-10'>
-        <h1 className='flex flex-grow-0 text-quinary text-5xl uppercase tracking-normal'>
+      <header className='flex flex-col sm:flex-row justify-between items-center my-10 px-4 sm:px-8'>
+        <h1 className='flex flex-grow-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
           overview
         </h1>
         <div className='flex flex-col sm:flex-row gap-3'>
@@ -127,21 +127,23 @@ const PlayerInfo = () => {
           </Button>
         </div>
       </header>
-      <section className='flex'>
-        <h2 className='text-quinary uppercase !p-0 !m-0'>Selected position</h2>
-        <section className='flex items-center'>
+      <section className='flex flex-col-reverse lg:flex-row justify-between items-center'>
+        <h2 className='text-quinary uppercase !p-0 !m-0 mb-4 lg:mb-0 lg:order-1'>
+          Selected position
+        </h2>
+        <section className='flex items-center lg:order-2'>
           <CustomDropDown
             items={items}
             ripple={false}
-            css={{ fontSize: '36px', fontWeight: 'bold' }}
+            css={{ fontSize: '24px', fontWeight: 'bold' }}
             selectedItem={selectedItem}
             setSelectedItem={setSelectedItem}
           />
         </section>
       </section>
       <div className='bg-quinary'>
-        <section className='grid h-screen grid-rows-2 grid-cols-[30%_repeat(3,_1fr)] bg-white'>
-          <section className='grid grid-cols-[40%_1fr] border rounded-lg'>
+        <section className='grid lg:grid-cols-4 gap-4 bg-white'>
+          <section className='grid grid-cols-[40%_1fr] border rounded-lg h-[50vh]'>
             <section className='flex justify-end pt-4'>
               <Avatar
                 src='/player_avatar.png'
@@ -223,8 +225,8 @@ const PlayerInfo = () => {
               </div>
             </section>
           </section>
-          <section className='border p-4 flex flex-col justify-center items-start rounded-lg'>
-            <div className='flex w-full relative'>
+          <section className='border p-4 flex flex-col items-start rounded-lg h-[50vh]'>
+            <section className='flex w-full relative'>
               <IconButton
                 handleClick={() => {}}
               >
@@ -240,7 +242,7 @@ const PlayerInfo = () => {
                 handleClick={() =>
                   handleZoomIn(
                     'statistics per position',
-                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
+                    <RadarChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} width='100%' height='100%' />
                   )}
               >
                 <Zoom
@@ -249,11 +251,11 @@ const PlayerInfo = () => {
 
                 />
               </IconButton>
-            </div>
-            <RadarChart id='position' radius='50%' indicator={indicator} data={data} />
+            </section>
+            <RadarChart id='position' radius='50%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
-          <section className='border p-4 flex flex-col justify-center items-center rounded-lg'>
-            <div className='flex w-full relative'>
+          <section className='border p-4 flex flex-col items-start rounded-lg h-[50vh]'>
+            <section className='flex w-full relative'>
               <IconButton
                 handleClick={() => {}}
               >
@@ -268,8 +270,8 @@ const PlayerInfo = () => {
               <IconButton
                 handleClick={() =>
                   handleZoomIn(
-                    'defense statistics',
-                    <GradeGaugeChart id='position' value={playerAverageRating} />
+                    'position ranking',
+                    <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
                   )}
               >
                 <Zoom
@@ -277,13 +279,13 @@ const PlayerInfo = () => {
                   className='absolute right-0 top-1 cursor-pointer hover:scale-110'
                 />
               </IconButton>
-            </div>
+            </section>
             <h5 className='flex-1 uppercase tracking-normal text-center'>
               average rating: {averageRating}
             </h5>
-            <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} />
+            <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
           </section>
-          <section className='border p-4 flex flex-col justify-center items-center rounded-lg'>
+          <section className='border p-4 flex flex-col items-start rounded-lg h-[50vh]'>
             <div className='flex w-full relative'>
               <IconButton
                 handleClick={() => {}}
@@ -300,8 +302,8 @@ const PlayerInfo = () => {
               <IconButton
                 handleClick={() =>
                   handleZoomIn(
-                    'aggressive statistics',
-                    <RingGaugeChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} />
+                    'statistics ranking',
+                    <RingGaugeChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} width='100%' height='100%' />
                   )}
               >
                 <Zoom
@@ -311,14 +313,14 @@ const PlayerInfo = () => {
                 />
               </IconButton>
             </div>
-            <RingGaugeChart id='aggressive' radius='50%' indicator={indicator} data={data} />
+            <RingGaugeChart id='aggressive' radius='50%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
-          <section className='border p-4 flex flex-1 flex-col items-center rounded-lg overflow-y-auto'>
+          <section className='border p-4 flex flex-1 flex-col items-center rounded-lg overflow-y-auto h-[50vh]'>
             <h3 className='uppercase tracking-normal'>similar players</h3>
             <ListView items={similarPlayers.slice(0, 9)} />
           </section>
           <section className='grid grid-cols-2 grid-rows-2'>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
+            <section className='border flex flex-col items-start p-4 rounded-lg'>
               <div>
                 <Image
                   src={yellowCard}
@@ -343,7 +345,7 @@ const PlayerInfo = () => {
                 </div>
               </div>
             </section>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
+            <section className='border flex flex-col items-start p-4 rounded-lg'>
               <div>
                 <Image
                   src={redCard}
@@ -368,7 +370,7 @@ const PlayerInfo = () => {
                 </div>
               </div>
             </section>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
+            <section className='border flex flex-col items-start p-4 rounded-lg'>
               <div>
                 <p className='text-gray-400 font-medium text-xs pt-2'>
                   Recoveries

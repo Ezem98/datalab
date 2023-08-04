@@ -56,5 +56,5 @@ export const RadarChart = ({ id, radius, data, indicator, axisLabel = false, sym
     }
   }, [data, radius, indicator, fontSize, symbolSize, axisLabel])
 
-  return <div ref={chartRef} id={id} style={{ width: '100%', height: '100vh' }} />
+  return <div ref={chartRef} id={id} style={{ width, height }} />
 }
