@@ -86,8 +86,8 @@ const PlayerInfo = () => {
     citizenship,
     yellowCards,
     redCards,
-    interceptionPerMatch,
-    foulsPerMatch
+    matchesPlayed,
+    minutesPlayed
   } = player
 
   // setSelectedItem(items.find(item => item.name === position.split(', ')[0]))
@@ -141,9 +141,10 @@ const PlayerInfo = () => {
           />
         </section>
       </section>
-      <div className='bg-quinary'>
-        <section className='grid lg:grid-cols-4 gap-4 bg-white'>
-          <section className='grid grid-cols-[40%_1fr] border rounded-lg h-[50vh]'>
+      <section className='grid lg:grid-cols-[20%_1fr] gap-4'>
+        <section className='grid lg:grid-rows-[41.5%_1fr] gap-4'>
+          {/* Player info */}
+          <section className='grid grid-cols-[40%_1fr] border rounded-lg'>
             <section className='flex justify-end pt-4'>
               <Avatar
                 src='/player_avatar.png'
@@ -225,7 +226,15 @@ const PlayerInfo = () => {
               </div>
             </section>
           </section>
-          <section className='border p-4 flex flex-col items-start rounded-lg h-[50vh]'>
+          {/* Similar Players */}
+          <section className='border p-4 flex flex-1 flex-col items-center rounded-lg overflow-y-auto row-start-2'>
+            <h3 className='uppercase tracking-normal'>similar players</h3>
+            <ListView items={similarPlayers.slice(0, 10)} />
+          </section>
+        </section>
+        <section className='grid grid-cols-2 grid-rows-2 gap-4'>
+          {/* Statistics per position */}
+          <section className='border p-4 flex flex-col items-start rounded-lg col-span-2'>
             <section className='flex w-full relative'>
               <IconButton
                 handleClick={() => {}}
@@ -248,12 +257,12 @@ const PlayerInfo = () => {
                 <Zoom
                   fontSize='26px'
                   className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-
                 />
               </IconButton>
             </section>
-            <RadarChart id='position' radius='50%' indicator={indicator} data={data} width='100%' height='100%' />
+            <RadarChart id='position' radius='90%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
+          {/* Position Ranking */}
           <section className='border p-4 flex flex-col items-start rounded-lg h-[50vh]'>
             <section className='flex w-full relative'>
               <IconButton
@@ -285,6 +294,7 @@ const PlayerInfo = () => {
             </h5>
             <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
           </section>
+          {/* Statistics Ranking */}
           <section className='border p-4 flex flex-col items-start rounded-lg h-[50vh]'>
             <div className='flex w-full relative'>
               <IconButton
@@ -293,7 +303,6 @@ const PlayerInfo = () => {
                 <Add
                   fontSize='26px'
                   className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-
                 />
               </IconButton>
               <h3 className='flex-1 uppercase tracking-normal text-center'>
@@ -309,17 +318,13 @@ const PlayerInfo = () => {
                 <Zoom
                   fontSize='26px'
                   className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-
                 />
               </IconButton>
             </div>
             <RingGaugeChart id='aggressive' radius='50%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
-          <section className='border p-4 flex flex-1 flex-col items-center rounded-lg overflow-y-auto h-[50vh]'>
-            <h3 className='uppercase tracking-normal'>similar players</h3>
-            <ListView items={similarPlayers.slice(0, 9)} />
-          </section>
-          <section className='grid grid-cols-2 grid-rows-2'>
+          {/* Yellow & Red Cards */}
+          <section className='grid grid-cols-2 gap-4'>
             <section className='border flex flex-col items-start p-4 rounded-lg'>
               <div>
                 <Image
@@ -370,61 +375,18 @@ const PlayerInfo = () => {
                 </div>
               </div>
             </section>
-            <section className='border flex flex-col items-start p-4 rounded-lg'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-2'>
-                  Recoveries
-                </p>
-                <p className='bg-gray-200 text-gray-400 font-medium text-xs text-center py-1 mt-2 rounded-md'>
-                  IND
-                </p>
-              </div>
-              <div className='flex justify-between items-center w-full'>
-                <h1 className='text-quinary font-medium'>3</h1>
-                <div className='flex items-center gap-2'>
-                  <p className='text-gray-400 font-medium text-xs'>-93%</p>
-                  <Image
-                    src={decreaseArrow}
-                    alt='yellow card picture'
-                    width='30'
-                    height='30'
-                  />
-                </div>
-              </div>
-            </section>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-2'>
-                  Clearances
-                </p>
-                <p className='bg-gray-200 text-gray-400 font-medium text-xs text-center py-1 mt-2 rounded-md'>
-                  TAC
-                </p>
-              </div>
-              <div className='flex justify-between items-center w-full'>
-                <h1 className='text-quinary font-medium'>0</h1>
-                <div className='flex items-center gap-2'>
-                  <p className='text-gray-400 font-medium text-xs'>-33%</p>
-                  <Image
-                    src={decreaseArrow}
-                    alt='yellow card picture'
-                    width='30'
-                    height='30'
-                  />
-                </div>
-              </div>
-            </section>
           </section>
-          <section className='grid grid-rows-2'>
+          {/* Minutes Played */}
+          <section className='grid'>
             <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
               <div>
                 <p className='text-gray-400 font-medium text-xs pt-2'>
-                  Interceptions p/90min
+                  Minutes played (matches)
                 </p>
               </div>
               <div className='flex justify-between items-center w-full'>
                 <h1 className='text-quinary font-medium'>
-                  {interceptionPerMatch}
+                  {minutesPlayed} min ({matchesPlayed})
                 </h1>
                 <div className='flex items-center gap-2'>
                   <p className='text-gray-400 font-medium text-xs'>-50%</p>
@@ -437,75 +399,9 @@ const PlayerInfo = () => {
                 </div>
               </div>
             </section>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-2'>Fouls</p>
-                <p className='bg-gray-200 text-gray-400 font-medium text-xs text-center py-1 mt-2 rounded-md'>
-                  TAC
-                </p>
-              </div>
-              <div className='flex justify-between items-center w-full'>
-                <h1 className='text-quinary font-medium'>{foulsPerMatch}</h1>
-                <div className='flex items-center gap-2'>
-                  <p className='text-gray-400 font-medium text-xs'>-50%</p>
-                  <Image
-                    src={decreaseArrow}
-                    alt='yellow card picture'
-                    width='30'
-                    height='30'
-                  />
-                </div>
-              </div>
-            </section>
-          </section>
-          <section className='grid grid-rows-2'>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-2'>
-                  Individual/pressure
-                </p>
-                <p className='bg-gray-200 text-gray-400 font-medium text-xs text-center py-1 mt-2 rounded-md'>
-                  INT
-                </p>
-              </div>
-              <div className='flex justify-between items-center w-full'>
-                <h1 className='text-quinary font-medium'>208.9</h1>
-                <div className='flex items-center gap-2'>
-                  <p className='text-gray-400 font-medium text-xs'>-50%</p>
-                  <Image
-                    src={decreaseArrow}
-                    alt='yellow card picture'
-                    width='30'
-                    height='30'
-                  />
-                </div>
-              </div>
-            </section>
-            <section className='border flex flex-col justify-between items-start p-4 rounded-lg'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-2'>
-                  Tackles
-                </p>
-                <p className='bg-gray-200 text-gray-400 font-medium text-xs text-center py-1 mt-2 rounded-md'>
-                  FOU
-                </p>
-              </div>
-              <div className='flex justify-between items-center w-full'>
-                <h1 className='text-quinary font-medium'>4</h1>
-                <div className='flex items-center gap-2'>
-                  <p className='text-gray-400 font-medium text-xs'>+33%</p>
-                  <Image
-                    src={increaseArrow}
-                    alt='yellow card picture'
-                    width='30'
-                    height='30'
-                  />
-                </div>
-              </div>
-            </section>
           </section>
         </section>
-      </div>
+      </section>
       {/* <PDFViewer>
         <MyDocument />
       </PDFViewer> */}
