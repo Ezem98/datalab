@@ -3,28 +3,29 @@
 import { useState } from 'react'
 import { Avatar } from '@nextui-org/react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
 import { MdAddChart as Add } from 'react-icons/md'
 // import { PDFViewer } from '@react-pdf/renderer'
-import { RadarChart } from '../../../components/charts/radarChart.jsx'
-import { RingGaugeChart } from '../../../components/charts/ringGaugeChart.jsx'
-import { GradeGaugeChart } from '../../../components/charts/gradeGaugeChart.jsx'
-import { Button } from '../../../components/button.jsx'
-import { CustomDropDown } from '../../../components/dropdown/customDropDown.jsx'
-import { ListView } from '../../../components/listView.jsx'
+import { RadarChart } from '../../components/charts/radarChart.jsx'
+import { RingGaugeChart } from '../../components/charts/ringGaugeChart.jsx'
+import { GradeGaugeChart } from '../../components/charts/gradeGaugeChart.jsx'
+import { Button } from '../../components/button.jsx'
+import { CustomDropDown } from '../../components/dropdown/customDropDown.jsx'
+import { ListView } from '../../components/listView.jsx'
 // import { MyDocument } from '../../../components/documentPDF.jsx'
-import { ContentModal } from '../../../components/contentModal.jsx'
-import { IconButton } from '../../../components/iconButton.jsx'
-import yellowCard from '../../../assets/icons/yellow-card.png'
-import redCard from '../../../assets/icons/red-card.png'
-import decreaseArrow from '../../../assets/icons/decrease.png'
-import increaseArrow from '../../../assets/icons/increase.png'
-import dorsal from '../../../assets/images/dorsal.png'
-import players from '../../../constants/players.json'
-import { positions, flags } from '../../../constants/constants.js'
-import { getPlayerStatisticsPerPosition, getSimilarPlayers, calculateAverageRating } from '../../../utils/functions.js'
-import { useModal } from '../../../hooks/useModal.jsx'
+import { ContentModal } from '../../components/contentModal.jsx'
+import { IconButton } from '../../components/iconButton.jsx'
+import yellowCard from '../../assets/icons/yellow-card.png'
+import redCard from '../../assets/icons/red-card.png'
+import decreaseArrow from '../../assets/icons/decrease.png'
+import increaseArrow from '../../assets/icons/increase.png'
+import dorsal from '../../assets/images/dorsal.png'
+import players from '../../constants/players.json'
+import { positions, flags } from '../../constants/constants.js'
+import { getPlayerStatisticsPerPosition, getSimilarPlayers, calculateAverageRating } from '../../utils/functions.js'
+import { useModal } from '../../hooks/useModal.jsx'
+import { useStore } from '../../store/store.js'
+import { useRouter } from 'next/navigation'
 
 // export async function fetchPlayer (id) {
 //   console.log('Hi server side')
@@ -41,11 +42,11 @@ import { useModal } from '../../../hooks/useModal.jsx'
 //   }))
 // }
 
-const PlayerInfo = ({ params }) => {
-  const { id } = params
-  const player = players.find((p) => p.key.toString() === id)
+const PlayerInfo = () => {
+  const player = useStore(state => state.basePlayer)
+  const handleBasePlayerData = useStore(state => state.handleBasePlayerData)
   const contentModal = useModal()
-
+  const router = useRouter()
   const items = positions.map((element, index) => {
     return {
       key: index,
@@ -117,14 +118,13 @@ const PlayerInfo = ({ params }) => {
           <Button color='secondary' className='mb-2 sm:mb-0'>
             Create report
           </Button>
-          <Link
-            href={{
-              pathname: '/comparePlayers',
-              query: player
+          <Button
+            color='primary' onClick={() => {
+              handleBasePlayerData(indicator, data)
+              router.push('/comparePlayers')
             }}
-          >
-            <Button color='primary'>Compare players</Button>
-          </Link>
+          >Compare players
+          </Button>
         </div>
       </header>
       <section className='flex flex-col-reverse lg:flex-row justify-between items-center'>
