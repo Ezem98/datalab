@@ -8,7 +8,20 @@ export const useStore = create(
       setBasePlayer: (basePlayer) => set((state) => ({ basePlayer })),
       playerToCompare: null,
       setPlayerToCompare: (playerToCompare) =>
-        set((state) => ({ playerToCompare }))
+        set((state) => ({ playerToCompare })),
+      data: [],
+      setData: (data) => set((state) => ({ data })),
+      indicator: [],
+      setIndicator: (indicator) => set((state) => ({ indicator })),
+      handleBasePlayerData: (indicator, data) => {
+        // Lógica para actualizar el estado 'data' en función de 'selectedItem'
+        set({ indicator })
+        set({ data })
+      },
+      handlePlayerToCompareData: (prevData, data) => {
+        // Lógica para actualizar el estado 'data' en función de 'selectedItem'
+        set({ data: [prevData[0], data] })
+      }
     }),
     {
       name: 'players-storage'

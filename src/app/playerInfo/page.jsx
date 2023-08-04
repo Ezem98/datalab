@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Avatar } from '@nextui-org/react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
 import { MdAddChart as Add } from 'react-icons/md'
 // import { PDFViewer } from '@react-pdf/renderer'
@@ -26,6 +25,7 @@ import { positions, flags } from '../../constants/constants.js'
 import { getPlayerStatisticsPerPosition, getSimilarPlayers, calculateAverageRating } from '../../utils/functions.js'
 import { useModal } from '../../hooks/useModal.jsx'
 import { useStore } from '../../store/store.js'
+import { useRouter } from 'next/navigation'
 
 // export async function fetchPlayer (id) {
 //   console.log('Hi server side')
@@ -44,8 +44,9 @@ import { useStore } from '../../store/store.js'
 
 const PlayerInfo = () => {
   const player = useStore(state => state.basePlayer)
+  const handleBasePlayerData = useStore(state => state.handleBasePlayerData)
   const contentModal = useModal()
-
+  const router = useRouter()
   const items = positions.map((element, index) => {
     return {
       key: index,
@@ -117,9 +118,13 @@ const PlayerInfo = () => {
           <Button color='secondary' className='mb-2 sm:mb-0'>
             Create report
           </Button>
-          <Link href='/comparePlayers'>
-            <Button color='primary'>Compare players</Button>
-          </Link>
+          <Button
+            color='primary' onClick={() => {
+              handleBasePlayerData(indicator, data)
+              router.push('/comparePlayers')
+            }}
+          >Compare players
+          </Button>
         </div>
       </header>
       <section className='flex'>

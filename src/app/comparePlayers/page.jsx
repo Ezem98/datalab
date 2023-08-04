@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 // import { PDFViewer } from '@react-pdf/renderer'
 import { Button } from '../../components/button.jsx'
 import { CustomDropDown } from '../../components/dropdown/customDropDown.jsx'
@@ -23,8 +23,12 @@ import { useModal } from '../../hooks/useModal.jsx'
 import { useStore } from '../../store/store.js'
 
 const ComparePlayers = () => {
-  const basePlayer = useStore(state => state.basePlayer)
+  const basePlayer = useStore((state) => state.basePlayer)
   const [playerToCompare, setPlayerToCompare] = useStore((state) => [state.playerToCompare, state.setPlayerToCompare])
+  const [data, setData] = useStore((state) => [state.data, state.setData])
+  const [indicator, setIndicator] = useStore((state) => [state.indicator, state.setIndicator])
+  const { handlePlayerToCompareData } = useStore()
+
   const contentModal = useModal()
 
   const items = positions.map((element, index) => {
@@ -50,9 +54,7 @@ const ComparePlayers = () => {
 
   const [filteredPlayers, setFilteredPlayers] = useState(players)
   const [selectedItem, setSelectedItem] = useState(items?.find(item => item?.name === basePlayer?.position?.split(', ')[0])?.name)
-  console.log({ selectedItem })
-  const [data, setData] = useState([])
-  const [indicator, setIndicator] = useState([])
+  // const [indicator, setIndicator] = useState([])
   const [modalTitle, setModalTitle] = useState(null)
   const [modalContent, setModalContent] = useState(null)
   const [selectedKeys, setSelectedKeys] = useState([])
@@ -61,6 +63,7 @@ const ComparePlayers = () => {
     basePlayer,
     'primary'
   )
+
   const handleChange = (e) => {
     e.preventDefault()
     const { value } = e.target
@@ -116,69 +119,6 @@ const ComparePlayers = () => {
     setData(newData)
   }
 
-  const handleBasePlayerData = () => {
-    let newData
-    if (data.length === 0) {
-      newData = [
-        basePlayerStatistics?.data[0]
-      ]
-    } else {
-      newData = [
-        basePlayerStatistics?.data[0],
-        data[1]
-      ]
-    }
-    setData(newData)
-  }
-
-  const handlePlayerToCompareData = () => {
-    const playerToCompareStatistics = getPlayerStatisticsPerPosition(
-      selectedItem,
-      playerToCompare
-    )
-    console.log({ data })
-    const newData = [
-      data[0],
-      playerToCompareStatistics?.data[0]
-    ]
-    setData(newData)
-  }
-
-  // useEffect(() => {
-  //   const basePlayerStatistics = getPlayerStatisticsPerPosition(
-  //     selectedItem?.name,
-  //     basePlayer,
-  //     'primary'
-  //   )
-
-  //   let playerToCompareStatistics
-  //   if (playerToCompare) {
-  //     playerToCompareStatistics = getPlayerStatisticsPerPosition(
-  //       selectedItem?.name,
-  //       playerToCompare
-  //     )
-  //   }
-
-  //   handleSetData(basePlayerStatistics, playerToCompareStatistics)
-
-  //   if (indicator.length === 0) {
-  //     setIndicator(basePlayerStatistics.indicator)
-  //   }
-  // }, [selectedItem, basePlayer, playerToCompare, indicator, handleSetData])
-
-  useEffect(() => {
-    // Suscribir la función para que se ejecute cuando 'variable' cambie
-    const unsubscribeBasePlayer = useStore.subscribe(handleBasePlayerData, (state) => state.selectedItem)
-    const unsubscribePlayerToCompare = useStore.subscribe(handlePlayerToCompareData, (state) => state.playerToCompare)
-
-    setData(basePlayerStatistics.data)
-    // Cuando el componente se desmonte, cancelar la suscripción
-    return () => {
-      unsubscribeBasePlayer()
-      unsubscribePlayerToCompare()
-    }
-  }, [])
-
   const filteredPositionStatsArray = getUnusedStatistics(basePlayerStatistics.indicator)
 
   return (
@@ -192,7 +132,7 @@ const ComparePlayers = () => {
           <Button color='primary'>Add comparable player</Button>
         </div>
       </header>
-      <section className='flex justify-between items-center'>
+      <section className='flex justify-between items-start'>
         <section className='flex'>
           <h2 className='text-quinary uppercase !p-0 !m-0'>
             Selected position
@@ -207,42 +147,51 @@ const ComparePlayers = () => {
             />
           </section>
         </section>
-        {playerToCompare && (
-          <section className='flex'>
-            <section className='flex items-center'>
-              <CustomDropDown
-                items={items}
-                ripple={false}
-                css={{ fontSize: '36px', fontWeight: 'bold' }}
-                selectedItem={selectedItem}
-                setSelectedItem={setSelectedItem}
-              />
-            </section>
-            <h2 className='text-quinary uppercase !p-0 !m-0'>
-              Selected position
-            </h2>
-          </section>
-        )}
+        <section className='flex flex-col'>
 
-        <CustomTriggerDropDown
-          key='players'
-          items={filteredPlayers}
-          ripple={false}
-          css={{ fontSize: '36px', fontWeight: 'bold' }}
-          selectedItem={playerToCompare}
-          onAction={(key) => {
-            setPlayerToCompare(
-              filteredPlayers.find((item) => item.key.toString() === key)
-            )
-          }}
-        >
-          <input
-            className='rounded-xl border-transparent h-10 bg-gray-100 px-4 py-2 text-xl focus:border-primary outline-none border-2'
-            placeholder='Search player'
-            type='search'
-            onChange={handleChange}
-          />
-        </CustomTriggerDropDown>
+          {playerToCompare && (
+            <section className='flex'>
+              <section className='flex items-center'>
+                <CustomDropDown
+                  items={items}
+                  ripple={false}
+                  css={{ fontSize: '36px', fontWeight: 'bold' }}
+                  selectedItem={selectedItem}
+                  setSelectedItem={setSelectedItem}
+                />
+              </section>
+              <h2 className='text-quinary uppercase !p-0 !m-0'>
+                Selected position
+              </h2>
+            </section>
+          )}
+
+          <CustomTriggerDropDown
+            key='players'
+            items={filteredPlayers}
+            ripple={false}
+            css={{ fontSize: '36px', fontWeight: 'bold' }}
+            selectedItem={playerToCompare}
+            onAction={(key) => {
+              const playerToCompare = filteredPlayers.find((item) => item.key.toString() === key)
+              setPlayerToCompare(
+                playerToCompare
+              )
+              const playerToCompareStatistics = getPlayerStatisticsPerPosition(
+                selectedItem,
+                playerToCompare
+              )
+              handlePlayerToCompareData(data, playerToCompareStatistics.data[0])
+            }}
+          >
+            <input
+              className='rounded-xl border-transparent h-10 bg-gray-100 px-4 py-2 text-xl focus:border-primary outline-none border-2'
+              placeholder='Search player'
+              type='search'
+              onChange={handleChange}
+            />
+          </CustomTriggerDropDown>
+        </section>
 
       </section>
       <section className='flex gap-4 pb-4'>
@@ -369,7 +318,7 @@ const ComparePlayers = () => {
                     id='position'
                     radius='90%'
                     indicator={basePlayerStatistics.indicator}
-                    data={basePlayerStatistics.data}
+                    data={data}
                     axisLabel
                     symbolSize={10}
                     fontSize={14}
@@ -383,7 +332,7 @@ const ComparePlayers = () => {
             id='compare'
             radius='90%'
             indicator={basePlayerStatistics.indicator}
-            data={basePlayerStatistics.data}
+            data={data}
             axisLabel
             symbolSize={10}
             width='100%'
