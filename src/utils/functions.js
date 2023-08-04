@@ -3,6 +3,7 @@ import { round } from 'lodash'
 
 export const getPlayerStatisticsPerPosition = (position, player, color) => {
   if (!player) return null
+  console.log({ position })
   const labels = positionStatistics[position]
   const data = [{
     value: [],
@@ -20,10 +21,12 @@ export const getPlayerStatisticsPerPosition = (position, player, color) => {
   const indicator = []
   const statistics = []
 
-  for (const label of labels) {
-    data[0].value.push(player[label])
-    indicator.push({ name: formatString(label) })
-    statistics.push(label)
+  if (labels) {
+    for (const label of labels) {
+      data[0].value.push(player[label])
+      indicator.push({ name: formatString(label) })
+      statistics.push(label)
+    }
   }
 
   return { indicator, data, statistics }

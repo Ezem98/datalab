@@ -5,8 +5,11 @@ import React from 'react'
 import { columns, colors } from '../constants/constants'
 import { Table } from '@nextui-org/react'
 import rows from '../constants/players.json'
-import Link from 'next/link'
+import { useStore } from '../store/store.js'
+import { useRouter } from 'next/navigation'
 const Home = () => {
+  const setPlayer = useStore(state => state.setBasePlayer)
+  const router = useRouter()
   return (
     <div className='container mx-auto px-8 pb-8'>
       <header className='flex justify-between items-center my-10'>
@@ -57,7 +60,7 @@ const Home = () => {
                 >
                   {(columnKey) =>
                     <Table.Cell css={{ cursor: 'pointer' }}>
-                      <Link href={`/playerInfo/${item.key}`} className='text-lg text-quinary'>{item[columnKey]}</Link>
+                      <button onClick={() => { setPlayer(item); router.push('/playerInfo') }} className='text-lg text-quinary'>{item[columnKey]}</button>
                     </Table.Cell>}
                 </Table.Row>
               )
