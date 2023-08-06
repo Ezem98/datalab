@@ -78,7 +78,7 @@ const RootLayout = ({ children }) => {
                 css={{ fontSize: '20px', fontWeight: 'bold' }}
                 selectedItem={null}
                 onAction={(key) => {
-                  const player = players.find(player => player.key === key)
+                  const player = players.find(player => player.key.toString() === key)
                   setBasePlayer(player)
                   router.push('/playerInfo')
                 }}

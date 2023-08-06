@@ -28,15 +28,12 @@ import { useStore } from '../../store/store.js'
 import { useRouter } from 'next/navigation'
 
 // export async function fetchPlayer (id) {
-//   console.log('Hi server side')
-//   // console.log({ params })
 //   const player = players.find((p) => p.key.toString() === id)
 
 //   return player
 // }
 
 // export async function generateStaticParams () {
-//   console.log('hola')
 //   return players.map(player => ({
 //     id: player.key.toString()
 //   }))
