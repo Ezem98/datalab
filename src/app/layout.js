@@ -11,6 +11,7 @@ import { CustomDropDown } from '../components/dropdown/customDropDown.jsx'
 import { useState } from 'react'
 import players from '../constants/players.json'
 import { useRouter } from 'next/navigation'
+import { useStore } from '../store/store.js'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -36,6 +37,7 @@ const RootLayout = ({ children }) => {
   const router = useRouter()
   const { isBrowser } = useSSR()
   const [filteredPlayers, setFilteredPlayers] = useState(players)
+  const { setBasePlayer } = useStore()
 
   const handleChange = (e) => {
     e.preventDefault()
@@ -75,7 +77,11 @@ const RootLayout = ({ children }) => {
                 ripple={false}
                 css={{ fontSize: '20px', fontWeight: 'bold' }}
                 selectedItem={null}
-                onAction={(key) => router.push(`/playerInfo/${key}`)}
+                onAction={(key) => {
+                  const player = players.find(player => player.key === key)
+                  setBasePlayer(player)
+                  router.push('/playerInfo')
+                }}
                 width='100%'
               >
                 <input
