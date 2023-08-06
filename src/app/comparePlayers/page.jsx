@@ -394,7 +394,7 @@ const ComparePlayers = () => {
                   </p>
                   <div className='flex items-center'>
                     <Image
-                      src={flags[playerToCompare?.citizenship]}
+                      src={flags[playerToCompare?.citizenship?.split(', ')[0]]}
                       alt='flag'
                       width='15'
                       height='15'
