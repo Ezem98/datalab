@@ -44,6 +44,8 @@ import { useRouter } from 'next/navigation'
 
 const PlayerInfo = () => {
   const player = useStore(state => state.basePlayer)
+  const { playerToCompare, handlePlayerToCompareData } = useStore()
+  const store = useStore()
   const handleBasePlayerData = useStore(state => state.handleBasePlayerData)
   const contentModal = useModal()
   const router = useRouter()
@@ -121,6 +123,14 @@ const PlayerInfo = () => {
           <Button
             color='primary' onClick={() => {
               handleBasePlayerData(indicator, data)
+              // if exists player to compare, add it to data
+              if (playerToCompare) {
+                const playerToCompareStatistics = getPlayerStatisticsPerPosition(
+                  items.find(item => item.name === position.split(', ')[0]).name,
+                  playerToCompare
+                )
+                handlePlayerToCompareData(store.data, playerToCompareStatistics.data[0])
+              }
               router.push('/comparePlayers')
             }}
           >Compare players

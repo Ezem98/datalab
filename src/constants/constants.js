@@ -1,3 +1,5 @@
+import players from './players.json'
+
 export const colors = {
   primary: '#5ba176',
   primaryShadow: '#5ba176',
@@ -341,6 +343,8 @@ export const positionStatistics = {
 export const positions = Object.keys(positionStatistics)
 
 export const statistics = [...new Set(Object.values(positionStatistics).flatMap((array) => array))]
+
+console.log([...new Set(Object.keys(players[0]).flatMap((array) => array))])
 
 export const flags = {
   Argentina: '/flags/argentina.svg',
