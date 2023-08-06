@@ -102,15 +102,11 @@ const ComparePlayers = () => {
     setSelectedKeys([...selectedKeys, newKey?.name])
 
     let newBasePlayerData = data.find(item => item?.name === basePlayer?.name)
-    console.log(getValueByStat(basePlayer, newKey?.name))
     newBasePlayerData = { ...newBasePlayerData, value: [...newBasePlayerData.value, getValueByStat(basePlayer, newKey?.name)] }
-
-    console.log('aca llego')
 
     let newPlayerToCompareData
 
     if (playerToCompare) {
-      console.log('entre')
       newPlayerToCompareData = data.find(item => item?.name === playerToCompare?.name)
       console.log(getValueByStat(playerToCompare, newKey?.name))
       newPlayerToCompareData = { ...newPlayerToCompareData, value: [...newPlayerToCompareData?.value, getValueByStat(playerToCompare, newKey?.name)] }

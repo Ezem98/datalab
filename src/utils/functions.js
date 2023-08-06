@@ -3,7 +3,6 @@ import { round } from 'lodash'
 
 export const getPlayerStatisticsPerPosition = (position, player, color) => {
   if (!player) return null
-  console.log({ position })
   const labels = positionStatistics[position]
   const data = [{
     value: [],

@@ -2,7 +2,6 @@
 
 import { Dropdown } from '@nextui-org/react'
 export const CustomDropDown = ({ variant, items, css, ripple, selectedItem, setSelectedItem, selectText = 'Select item' }) => {
-  console.log({ selectedItem })
   return (
     <Dropdown>
       <Dropdown.Button light css={css} ripple={ripple}>{selectedItem ?? selectText}</Dropdown.Button>
