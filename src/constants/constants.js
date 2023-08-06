@@ -405,5 +405,7 @@ export const weights = {
   'backwardPassesAccuracy(%)': 0.05,
   sidewaysPassesPerMatch: 0.05,
   'sidewaysPassesAccuracy(%)': 0.05,
-  successfulAttackingActionsPerMatch: 0.1
+  successfulAttackingActionsPerMatch: 0.1,
+  forwardPassesPerMatch: 0.1,
+  'forwardPassesAccuracy(%)': 0.15
 }

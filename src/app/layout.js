@@ -96,7 +96,7 @@ const RootLayout = ({ children }) => {
                   items={[]}
                   ripple={false}
                   css={{ fontSize: '16px', fontWeight: 'bold' }}
-                  selectedItem=''
+                  selectedItem={null}
                   setSelectedItem={null}
                   selectText='Select database'
                 />

@@ -128,6 +128,7 @@ export const getSimilarPlayers = (player, players, relevantFeatures) => {
 }
 
 const calculateRating = (player, position) => {
+  // see why it is executing many times
   const relevantFeatures = positionStatistics[position]
 
   if (!player || !player.position || !position) {
@@ -147,7 +148,6 @@ const calculateRating = (player, position) => {
       totalRating += player[feature] * weights[feature]
     }
   }
-
   return totalRating
 }
 
