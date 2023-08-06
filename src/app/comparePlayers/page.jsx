@@ -108,7 +108,6 @@ const ComparePlayers = () => {
 
     if (playerToCompare) {
       newPlayerToCompareData = data.find(item => item?.name === playerToCompare?.name)
-      console.log(getValueByStat(playerToCompare, newKey?.name))
       newPlayerToCompareData = { ...newPlayerToCompareData, value: [...newPlayerToCompareData?.value, getValueByStat(playerToCompare, newKey?.name)] }
     }
     const newData = [newBasePlayerData, newPlayerToCompareData]
