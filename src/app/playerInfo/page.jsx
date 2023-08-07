@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Avatar } from '@nextui-org/react'
 import Image from 'next/image'
 import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
@@ -30,6 +30,10 @@ import { useRouter } from 'next/navigation'
 const PlayerInfo = () => {
   const player = useStore(state => state.basePlayer)
   const { playerToCompare, handlePlayerToCompareData } = useStore()
+  const [data, setData] = useStore(state => [state.data, state.setData])
+  const [indicator, setIndicator] = useStore(state => [state.indicator, state.setIndicator])
+  const [statistics, setStatistics] = useStore(state => [state.statistics, state.setStatistics])
+  const [selectedItem, setSelectedItem] = useStore(state => [state.selectedItem, state.setSelectedItem])
   const store = useStore()
   const handleBasePlayerData = useStore(state => state.handleBasePlayerData)
   const contentModal = useModal()
@@ -41,7 +45,6 @@ const PlayerInfo = () => {
     }
   })
 
-  const [selectedItem, setSelectedItem] = useState(null)
   const [modalTitle, setModalTitle] = useState(null)
   const [modalContent, setModalContent] = useState(null)
 
@@ -59,10 +62,6 @@ const PlayerInfo = () => {
     </>
   )
 
-  if (!player) {
-    return <p>Jugador no encontrado.</p>
-  }
-
   const {
     name,
     position,
@@ -77,14 +76,6 @@ const PlayerInfo = () => {
     minutesPlayed
   } = player
 
-  // setSelectedItem(items.find(item => item.name === position.split(', ')[0]))
-
-  const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
-    selectedItem?.name ?? items.find(item => item.name === position.split(', ')[0]).name,
-    player,
-    'primary'
-  )
-
   const { playerAverageRating, averageRating } = calculateAverageRating(selectedItem?.name ?? items.find(item => item.name === position.split(', ')[0]).name, players, player)
 
   const similarPlayers = getSimilarPlayers(player, players, [...statistics, 'age', 'position'])
@@ -94,6 +85,23 @@ const PlayerInfo = () => {
     setModalContent(content)
     contentModal?.openModal()
   }
+
+  useEffect(() => {
+    console.log('cycle')
+    setSelectedItem(items.find(item => item.name === position.split(', ')[0])?.name)
+  }, [])
+
+  useEffect(() => {
+    console.log('cycle')
+    const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
+      selectedItem ?? items.find(item => item.name === position.split(', ')[0])?.name,
+      player,
+      'primary'
+    )
+    setData(data)
+    setIndicator(indicator)
+    setStatistics(statistics)
+  }, [selectedItem])
 
   return (
     <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
