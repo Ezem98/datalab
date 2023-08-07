@@ -13,6 +13,10 @@ export const useStore = create(
       setData: (data) => set((state) => ({ data })),
       indicator: [],
       setIndicator: (indicator) => set((state) => ({ indicator })),
+      statistics: [],
+      setStatistics: (statistics) => set((state) => ({ statistics })),
+      selectedItem: null,
+      setSelectedItem: (selectedItem) => set((state) => ({ selectedItem })),
       handleBasePlayerData: (indicator, data) => {
         // Lógica para actualizar el estado 'data' en función de 'selectedItem'
         set({ indicator })

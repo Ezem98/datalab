@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Avatar } from '@nextui-org/react'
 import Image from 'next/image'
 import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
@@ -27,21 +27,13 @@ import { useModal } from '../../hooks/useModal.jsx'
 import { useStore } from '../../store/store.js'
 import { useRouter } from 'next/navigation'
 
-// export async function fetchPlayer (id) {
-//   const player = players.find((p) => p.key.toString() === id)
-
-//   return player
-// }
-
-// export async function generateStaticParams () {
-//   return players.map(player => ({
-//     id: player.key.toString()
-//   }))
-// }
-
 const PlayerInfo = () => {
   const player = useStore(state => state.basePlayer)
   const { playerToCompare, handlePlayerToCompareData } = useStore()
+  const [data, setData] = useStore(state => [state.data, state.setData])
+  const [indicator, setIndicator] = useStore(state => [state.indicator, state.setIndicator])
+  const [statistics, setStatistics] = useStore(state => [state.statistics, state.setStatistics])
+  const [selectedItem, setSelectedItem] = useStore(state => [state.selectedItem, state.setSelectedItem])
   const store = useStore()
   const handleBasePlayerData = useStore(state => state.handleBasePlayerData)
   const contentModal = useModal()
@@ -53,7 +45,6 @@ const PlayerInfo = () => {
     }
   })
 
-  const [selectedItem, setSelectedItem] = useState(null)
   const [modalTitle, setModalTitle] = useState(null)
   const [modalContent, setModalContent] = useState(null)
 
@@ -71,10 +62,6 @@ const PlayerInfo = () => {
     </>
   )
 
-  if (!player) {
-    return <p>Jugador no encontrado.</p>
-  }
-
   const {
     name,
     position,
@@ -89,14 +76,6 @@ const PlayerInfo = () => {
     minutesPlayed
   } = player
 
-  // setSelectedItem(items.find(item => item.name === position.split(', ')[0]))
-
-  const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
-    selectedItem?.name ?? items.find(item => item.name === position.split(', ')[0]).name,
-    player,
-    'primary'
-  )
-
   const { playerAverageRating, averageRating } = calculateAverageRating(selectedItem?.name ?? items.find(item => item.name === position.split(', ')[0]).name, players, player)
 
   const similarPlayers = getSimilarPlayers(player, players, [...statistics, 'age', 'position'])
@@ -107,9 +86,24 @@ const PlayerInfo = () => {
     contentModal?.openModal()
   }
 
+  useEffect(() => {
+    setSelectedItem(items.find(item => item.name === position.split(', ')[0])?.name)
+  }, [])
+
+  useEffect(() => {
+    const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
+      selectedItem ?? items.find(item => item.name === position.split(', ')[0])?.name,
+      player,
+      'primary'
+    )
+    setData(data)
+    setIndicator(indicator)
+    setStatistics(statistics)
+  }, [selectedItem])
+
   return (
-    <div className='container px-8 pb-12'>
-      <header className='flex flex-col sm:flex-row justify-between items-center my-10 px-4 sm:px-8'>
+    <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
+      <header className='flex flex-col sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 my-4 sm:my-6 md:my-8 lg:my-10 xl:my-12'>
         <h1 className='flex flex-grow-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
           overview
         </h1>
@@ -134,7 +128,7 @@ const PlayerInfo = () => {
           </Button>
         </div>
       </header>
-      <section className='flex flex-col-reverse lg:flex-row justify-between items-center'>
+      <section className='flex flex-col-reverse lg:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
         <h2 className='text-quinary uppercase !p-0 !m-0 mb-4 lg:mb-0 lg:order-1'>
           Selected position
         </h2>
@@ -148,8 +142,8 @@ const PlayerInfo = () => {
           />
         </section>
       </section>
-      <section className='grid h-screen lg:grid-rows-[45%_40%] gap-4'>
-        <section className='grid lg:grid-cols-[20%_1fr] gap-4 row-start-1'>
+      <section className='grid lg:grid-rows-[55%_35%_10%] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
+        <section className='grid lg:grid-cols-[30%_1fr] gap-4 row-start-1'>
           {/* Player info */}
           <section className='grid grid-cols-[40%_1fr] border rounded-lg'>
             <section className='flex justify-end pt-4'>
@@ -263,7 +257,7 @@ const PlayerInfo = () => {
             <RadarChart id='position' radius='90%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
         </section>
-        <section className='grid lg:grid-cols-[20%_1fr] gap-4 row-start-2'>
+        <section className='grid lg:grid-cols-[30%_1fr] gap-4 row-start-2'>
           {/* Similar Players */}
           <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
             <h3 className='uppercase tracking-normal'>similar players</h3>
@@ -271,7 +265,7 @@ const PlayerInfo = () => {
           </section>
           <section className='grid grid-cols-2 gap-4'>
             {/* Position Ranking */}
-            <section className='border p-4 flex flex-col items-start rounded-lg'>
+            <section className='border p-4 flex flex-col items-start justify-start rounded-lg'>
               <section className='flex w-full relative'>
                 <IconButton
                   handleClick={() => {}}
@@ -300,7 +294,9 @@ const PlayerInfo = () => {
               <h5 className='flex-1 uppercase tracking-normal text-center'>
                 average rating: {averageRating}
               </h5>
-              <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
+              <div className='flex justify-center items-center w-full h-full'>
+                <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
+              </div>
             </section>
             {/* Statistics Ranking */}
             <section className='border p-4 flex flex-col items-start rounded-lg'>

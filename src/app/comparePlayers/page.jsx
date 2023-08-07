@@ -27,6 +27,7 @@ const ComparePlayers = () => {
   const [playerToCompare, setPlayerToCompare] = useStore((state) => [state.playerToCompare, state.setPlayerToCompare])
   const [data, setData] = useStore((state) => [state.data, state.setData])
   const [indicator, setIndicator] = useStore((state) => [state.indicator, state.setIndicator])
+  const [selectedItem, setSelectedItem] = useStore(state => [state.selectedItem, state.setSelectedItem])
   const { handlePlayerToCompareData } = useStore()
 
   const contentModal = useModal()
@@ -53,7 +54,6 @@ const ComparePlayers = () => {
   )
 
   const [filteredPlayers, setFilteredPlayers] = useState(players)
-  const [selectedItem, setSelectedItem] = useState(items?.find(item => item?.name === basePlayer?.position?.split(', ')[0])?.name)
   // const [indicator, setIndicator] = useState([])
   const [modalTitle, setModalTitle] = useState(null)
   const [modalContent, setModalContent] = useState(null)
