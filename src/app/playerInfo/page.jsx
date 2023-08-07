@@ -87,12 +87,10 @@ const PlayerInfo = () => {
   }
 
   useEffect(() => {
-    console.log('cycle')
     setSelectedItem(items.find(item => item.name === position.split(', ')[0])?.name)
   }, [])
 
   useEffect(() => {
-    console.log('cycle')
     const { indicator, data, statistics } = getPlayerStatisticsPerPosition(
       selectedItem ?? items.find(item => item.name === position.split(', ')[0])?.name,
       player,
