@@ -19,13 +19,13 @@ import yellowCard from '../../assets/icons/yellow-card.png'
 import redCard from '../../assets/icons/red-card.png'
 import decreaseArrow from '../../assets/icons/decrease.png'
 import increaseArrow from '../../assets/icons/increase.png'
-import dorsal from '../../assets/images/dorsal.png'
 import players from '../../constants/players.json'
 import { positions, flags } from '../../constants/constants.js'
 import { getPlayerStatisticsPerPosition, getSimilarPlayers, calculateAverageRating } from '../../utils/functions.js'
 import { useModal } from '../../hooks/useModal.jsx'
 import { useStore } from '../../store/store.js'
 import { useRouter } from 'next/navigation'
+import { round } from 'lodash'
 
 const PlayerInfo = () => {
   const player = useStore(state => state.basePlayer)
@@ -68,7 +68,9 @@ const PlayerInfo = () => {
     age,
     height,
     weight,
-    placeOfBirth,
+    club,
+    marketValue,
+    foot,
     citizenship,
     yellowCards,
     redCards,
@@ -103,11 +105,11 @@ const PlayerInfo = () => {
 
   return (
     <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
-      <header className='flex flex-col sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 my-4 sm:my-6 md:my-8 lg:my-10 xl:my-12'>
-        <h1 className='flex flex-grow-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
+      <header className='flex flex-col m-0 p-0 sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 my-4 sm:my-6 md:my-8 lg:my-10 xl:my-12'>
+        <h1 className='flex flex-grow-0 m-0 p-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
           overview
         </h1>
-        <div className='flex flex-col sm:flex-row gap-3'>
+        <div className='flex flex-col sm:flex-row gap-3 m-0 p-0'>
           <Button color='secondary' className='mb-2 sm:mb-0'>
             Create report
           </Button>
@@ -146,84 +148,41 @@ const PlayerInfo = () => {
         {/* Player info */}
         <section className='flex border rounded-lg'>
           {/* Player Image */}
-          <section className='flex justify-end pt-4'>
+          <section className='flex flex-col justify-between items-between p-4'>
             <Avatar
               src='/player_avatar.png'
               css={{ size: '$20' }}
               color='primary'
               bordered
             />
+            <section className='flex justify-between items-center'>
+              <Image
+                src={flags[citizenship]}
+                alt='flag'
+                width='20'
+                height='20'
+                style={{
+                  objectFit: 'contain'
+                }}
+              />
+              <h3 className='text-base uppercase p-0 m-0'>{foot}</h3>
+            </section>
           </section>
-          <section className='p-4'>
-            <h3 className='uppercase flex tracking-normal'>{name}</h3>
-            <div className='grid grid-cols-2'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-10'>
-                  Position
-                </p>
-                <h3 className='text-base pt-2'>{position}</h3>
-              </div>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-10'>
-                  Place of birth
-                </p>
-                <div className='flex items-center'>
-                  <Image
-                    src={flags[placeOfBirth]}
-                    alt='flag'
-                    width='15'
-                    height='15'
-                    style={{
-                      objectFit: 'contain',
-                      paddingBottom: '5px',
-                      marginRight: '5px'
-                    }}
-                  />
-                  <h3 className='text-base pt-2'>{placeOfBirth}</h3>
-                </div>
-              </div>
-            </div>
-            <div className='grid grid-cols-2'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-10'>
-                  Height
-                </p>
-                <h3 className='text-base pt-2'>{height / 100} M</h3>
-              </div>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-10'>
-                  Citizenship
-                </p>
-                <div className='flex items-center'>
-                  <Image
-                    src={flags[citizenship]}
-                    alt='flag'
-                    width='15'
-                    height='15'
-                    style={{
-                      objectFit: 'contain',
-                      paddingBottom: '5px',
-                      marginRight: '5px'
-                    }}
-                  />
-                  <h3 className='text-base pt-2'>{citizenship}</h3>
-                </div>
-              </div>
-            </div>
-            <div className='grid grid-cols-2'>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-10'>
-                  Weight
-                </p>
-                <h3 className='text-base pt-2'>{weight} KG</h3>
-              </div>
-              <div>
-                <p className='text-gray-400 font-medium text-xs pt-10'>
-                  Date of birth(Age)
-                </p>
-                <h3 className='text-base pt-2'>JAN 14, 2004({age})</h3>
-              </div>
-            </div>
+          <section className='flex flex-col justify-between p-4'>
+            {/* Player Name */}
+            <h3 className='uppercase flex tracking-wider p-0 m-0'>{name}</h3>
+            <section className='flex justify-between '>
+              <h3 className='text-gray-400 font-medium text-sm'>{position}</h3>
+              <h3 className='text-gray-400 font-medium text-sm'>{age}</h3>
+            </section>
+            <section className='flex justify-between'>
+              <h3 className='text-base'>{height / 100} M</h3>
+              <h3 className='text-base'>{weight} KG</h3>
+            </section>
+            <section className='flex justify-between'>
+              <h3 className='text-base'>{club}</h3>
+              <h3 className='text-base'>{round((marketValue / 1000000), 2)} M</h3>
+            </section>
           </section>
         </section>
         <section className='grid lg:grid-cols-[30%_1fr] gap-4'>
