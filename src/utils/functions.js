@@ -152,13 +152,14 @@ const calculateRating = (player, position) => {
 }
 
 export const calculateAverageRating = (position, players, player) => {
-  const playersAtPosition = players.filter(p => p.position.includes(position))
+  let playersAtPosition = players.filter(p => p.position.includes(position))
+  playersAtPosition = playersAtPosition.filter(p => p.key !== player.key)
   let totalRating = 0
 
   const playerAverageRating = round(calculateRating(player, position), 2)
 
-  for (const pap of playersAtPosition) {
-    totalRating += round(calculateRating(pap, position), 2)
+  for (const pAtP of playersAtPosition) {
+    totalRating += round(calculateRating(pAtP, position), 2)
   }
 
   const averageRating = round(totalRating / playersAtPosition.length, 2)
