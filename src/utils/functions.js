@@ -177,3 +177,12 @@ export const calculateAverageRating = (position, players, player) => {
 
   return { playerAverageRating, averageRating }
 }
+
+export const findIndexOfEmptyPosition = (array) => {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === null || array[i] === undefined) {
+      return i // Retorna el índice de la posición vacía
+    }
+  }
+  return -1 // Si no se encuentra ninguna posición vacía, retorna -1
+}
