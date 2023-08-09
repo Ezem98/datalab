@@ -19,13 +19,13 @@ import yellowCard from '../../assets/icons/yellow-card.png'
 import redCard from '../../assets/icons/red-card.png'
 import decreaseArrow from '../../assets/icons/decrease.png'
 import increaseArrow from '../../assets/icons/increase.png'
-import dorsal from '../../assets/images/dorsal.png'
 import players from '../../constants/players.json'
 import { positions, flags } from '../../constants/constants.js'
 import { getPlayerStatisticsPerPosition, getSimilarPlayers, calculateAverageRating } from '../../utils/functions.js'
 import { useModal } from '../../hooks/useModal.jsx'
 import { useStore } from '../../store/store.js'
 import { useRouter } from 'next/navigation'
+import { round } from 'lodash'
 
 const PlayerInfo = () => {
   const player = useStore(state => state.basePlayer)
@@ -68,7 +68,9 @@ const PlayerInfo = () => {
     age,
     height,
     weight,
-    placeOfBirth,
+    club,
+    marketValue,
+    foot,
     citizenship,
     yellowCards,
     redCards,
@@ -103,11 +105,11 @@ const PlayerInfo = () => {
 
   return (
     <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
-      <header className='flex flex-col sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 my-4 sm:my-6 md:my-8 lg:my-10 xl:my-12'>
-        <h1 className='flex flex-grow-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
+      <header className='flex flex-col m-0 p-0 sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 my-4 sm:my-6 md:my-8 lg:my-10 xl:my-12'>
+        <h1 className='flex flex-grow-0 m-0 p-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
           overview
         </h1>
-        <div className='flex flex-col sm:flex-row gap-3'>
+        <div className='flex flex-col sm:flex-row gap-3 m-0 p-0'>
           <Button color='secondary' className='mb-2 sm:mb-0'>
             Create report
           </Button>
@@ -142,90 +144,53 @@ const PlayerInfo = () => {
           />
         </section>
       </section>
-      <section className='grid lg:grid-rows-[55%_35%_10%] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
-        <section className='grid lg:grid-cols-[30%_1fr] gap-4 row-start-1'>
-          {/* Player info */}
-          <section className='grid grid-cols-[40%_1fr] border rounded-lg'>
-            <section className='flex justify-end pt-4'>
-              <Avatar
-                src='/player_avatar.png'
-                css={{ size: '$20' }}
-                color='primary'
-                bordered
+      <section className='grid lg:grid-rows-[10%_45%_35%_10%] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
+        {/* Player info */}
+        <section className='flex border rounded-lg'>
+          {/* Player Image */}
+          <section className='flex flex-col justify-between items-between p-4'>
+            <Avatar
+              src='/player_avatar.png'
+              css={{ size: '$20' }}
+              color='primary'
+              bordered
+            />
+            <section className='flex justify-between items-center'>
+              <Image
+                src={flags[citizenship]}
+                alt='flag'
+                width='20'
+                height='20'
+                style={{
+                  objectFit: 'contain'
+                }}
               />
+              <h3 className='text-base uppercase p-0 m-0'>{foot}</h3>
             </section>
-            <section className='p-4'>
-              <h3 className='uppercase flex tracking-normal'>{name}</h3>
-              <Image src={dorsal} alt='dorsal' width='50' height='50' />
-              <div className='grid grid-cols-2'>
-                <div>
-                  <p className='text-gray-400 font-medium text-xs pt-10'>
-                    Position
-                  </p>
-                  <h3 className='text-base pt-2'>{position}</h3>
-                </div>
-                <div>
-                  <p className='text-gray-400 font-medium text-xs pt-10'>
-                    Place of birth
-                  </p>
-                  <div className='flex items-center'>
-                    <Image
-                      src={flags[placeOfBirth]}
-                      alt='flag'
-                      width='15'
-                      height='15'
-                      style={{
-                        objectFit: 'contain',
-                        paddingBottom: '5px',
-                        marginRight: '5px'
-                      }}
-                    />
-                    <h3 className='text-base pt-2'>{placeOfBirth}</h3>
-                  </div>
-                </div>
-              </div>
-              <div className='grid grid-cols-2'>
-                <div>
-                  <p className='text-gray-400 font-medium text-xs pt-10'>
-                    Height
-                  </p>
-                  <h3 className='text-base pt-2'>{height / 100} M</h3>
-                </div>
-                <div>
-                  <p className='text-gray-400 font-medium text-xs pt-10'>
-                    Citizenship
-                  </p>
-                  <div className='flex items-center'>
-                    <Image
-                      src={flags[placeOfBirth]}
-                      alt='flag'
-                      width='15'
-                      height='15'
-                      style={{
-                        objectFit: 'contain',
-                        paddingBottom: '5px',
-                        marginRight: '5px'
-                      }}
-                    />
-                    <h3 className='text-base pt-2'>{citizenship}</h3>
-                  </div>
-                </div>
-              </div>
-              <div className='grid grid-cols-2'>
-                <div>
-                  <p className='text-gray-400 font-medium text-xs pt-10'>
-                    Weight
-                  </p>
-                  <h3 className='text-base pt-2'>{weight} KG</h3>
-                </div>
-                <div>
-                  <p className='text-gray-400 font-medium text-xs pt-10'>
-                    Date of birth(Age)
-                  </p>
-                  <h3 className='text-base pt-2'>JAN 14, 2004({age})</h3>
-                </div>
-              </div>
+          </section>
+          <section className='flex flex-col justify-between p-4'>
+            {/* Player Name */}
+            <h3 className='uppercase flex tracking-wider p-0 m-0'>{name}</h3>
+            <section className='flex justify-between '>
+              <h3 className='text-gray-400 font-medium text-sm'>{position}</h3>
+              <h3 className='text-gray-400 font-medium text-sm'>{age}</h3>
             </section>
+            <section className='flex justify-between'>
+              <h3 className='text-base'>{height / 100} M</h3>
+              <h3 className='text-base'>{weight} KG</h3>
+            </section>
+            <section className='flex justify-between'>
+              <h3 className='text-base'>{club}</h3>
+              <h3 className='text-base'>{round((marketValue / 1000000), 2)} M</h3>
+            </section>
+          </section>
+        </section>
+        <section className='grid lg:grid-cols-[30%_1fr] gap-4'>
+
+          {/* Similar Players */}
+          <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
+            <h3 className='uppercase tracking-normal'>similar players</h3>
+            <ListView items={similarPlayers.slice(0, 10)} />
           </section>
           {/* Statistics per position */}
           <section className='border p-4 flex flex-col items-start rounded-lg'>
@@ -257,79 +222,72 @@ const PlayerInfo = () => {
             <RadarChart id='position' radius='90%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
         </section>
-        <section className='grid lg:grid-cols-[30%_1fr] gap-4 row-start-2'>
-          {/* Similar Players */}
-          <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
-            <h3 className='uppercase tracking-normal'>similar players</h3>
-            <ListView items={similarPlayers.slice(0, 10)} />
+        <section className='grid lg:grid-cols-2 gap-4'>
+          {/* Position Ranking */}
+          <section className='border p-4 flex flex-col items-start justify-start rounded-lg'>
+            <section className='flex w-full relative'>
+              <IconButton
+                handleClick={() => {}}
+              >
+                <Add
+                  fontSize='26px'
+                  className='absolute left-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
+              <h3 className='flex-1 uppercase tracking-normal text-center'>
+                position ranking
+              </h3>
+              <IconButton
+                handleClick={() =>
+                  handleZoomIn(
+                    'position ranking',
+                    <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
+                  )}
+              >
+                <Zoom
+                  fontSize='26px'
+                  className='absolute right-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
+            </section>
+            <h5 className='flex-1 uppercase tracking-normal text-center'>
+              average rating: {averageRating}
+            </h5>
+            <div className='flex justify-center items-center w-full h-full'>
+              <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
+            </div>
           </section>
-          <section className='grid grid-cols-2 gap-4'>
-            {/* Position Ranking */}
-            <section className='border p-4 flex flex-col items-start justify-start rounded-lg'>
-              <section className='flex w-full relative'>
-                <IconButton
-                  handleClick={() => {}}
-                >
-                  <Add
-                    fontSize='26px'
-                    className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-                  />
-                </IconButton>
-                <h3 className='flex-1 uppercase tracking-normal text-center'>
-                  position ranking
-                </h3>
-                <IconButton
-                  handleClick={() =>
-                    handleZoomIn(
-                      'position ranking',
-                      <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
-                    )}
-                >
-                  <Zoom
-                    fontSize='26px'
-                    className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-                  />
-                </IconButton>
-              </section>
-              <h5 className='flex-1 uppercase tracking-normal text-center'>
-                average rating: {averageRating}
-              </h5>
-              <div className='flex justify-center items-center w-full h-full'>
-                <GradeGaugeChart id='position' value={playerAverageRating} averageRating={averageRating} width='100%' height='100%' />
-              </div>
-            </section>
-            {/* Statistics Ranking */}
-            <section className='border p-4 flex flex-col items-start rounded-lg'>
-              <div className='flex w-full relative'>
-                <IconButton
-                  handleClick={() => {}}
-                >
-                  <Add
-                    fontSize='26px'
-                    className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-                  />
-                </IconButton>
-                <h3 className='flex-1 uppercase tracking-normal text-center'>
-                  statistics ranking
-                </h3>
-                <IconButton
-                  handleClick={() =>
-                    handleZoomIn(
-                      'statistics ranking',
-                      <RingGaugeChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} width='100%' height='100%' />
-                    )}
-                >
-                  <Zoom
-                    fontSize='26px'
-                    className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-                  />
-                </IconButton>
-              </div>
-              <RingGaugeChart id='aggressive' radius='50%' indicator={indicator} data={data} width='100%' height='100%' />
-            </section>
+          {/* Statistics Ranking */}
+          <section className='border p-4 flex flex-col items-start rounded-lg'>
+            <div className='flex w-full relative'>
+              <IconButton
+                handleClick={() => {}}
+              >
+                <Add
+                  fontSize='26px'
+                  className='absolute left-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
+              <h3 className='flex-1 uppercase tracking-normal text-center'>
+                statistics ranking
+              </h3>
+              <IconButton
+                handleClick={() =>
+                  handleZoomIn(
+                    'statistics ranking',
+                    <RingGaugeChart id='position' radius='90%' indicator={indicator} data={data} axisLabel symbolSize={10} fontSize={14} width='100%' height='100%' />
+                  )}
+              >
+                <Zoom
+                  fontSize='26px'
+                  className='absolute right-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
+            </div>
+            <RingGaugeChart id='aggressive' radius='50%' indicator={indicator} data={data} width='100%' height='100%' />
           </section>
         </section>
-        <section className='grid lg:grid-cols-2 gap-4 row-start-3'>
+        <section className='grid lg:grid-cols-2 gap-4'>
           {/* Yellow & Red Cards */}
           <section className='grid grid-cols-2 gap-4'>
             <section className='border flex flex-col items-start p-4 rounded-lg'>

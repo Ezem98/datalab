@@ -2,18 +2,19 @@
 
 import * as echarts from 'echarts'
 import { useEffect, useRef } from 'react'
-// import { colors } from '../../constants/constants'
+import { colors } from '../../constants/constants'
 
 const gaugeData = [
   {
     value: 20,
-    name: 'Perfect',
+    name: 'Excellent',
     title: {
       offsetCenter: ['0%', '-30%']
     },
     detail: {
       valueAnimation: true,
-      offsetCenter: ['0%', '-20%']
+      offsetCenter: ['0%', '-20%'],
+      color: '#5470C6'
     }
   },
   {
@@ -25,6 +26,9 @@ const gaugeData = [
     detail: {
       valueAnimation: true,
       offsetCenter: ['0%', '10%']
+    },
+    itemStyle: {
+      color: colors.primary
     }
   },
   {
@@ -36,6 +40,9 @@ const gaugeData = [
     detail: {
       valueAnimation: true,
       offsetCenter: ['0%', '40%']
+    },
+    itemStyle: {
+      color: colors.secondary
     }
   }
 ]
@@ -48,6 +55,7 @@ export const RingGaugeChart = ({ id, radius, data, indicator, axisLabel = false,
       series: [
         {
           type: 'gauge',
+          colorBy: 'data',
           startAngle: 90,
           endAngle: -270,
           pointer: {
@@ -59,9 +67,10 @@ export const RingGaugeChart = ({ id, radius, data, indicator, axisLabel = false,
             roundCap: true,
             clip: false,
             itemStyle: {
-              borderWidth: 1,
+              borderWidth: 2,
               borderColor: '#464646'
             }
+
           },
           axisLine: {
             lineStyle: {
@@ -69,15 +78,15 @@ export const RingGaugeChart = ({ id, radius, data, indicator, axisLabel = false,
             }
           },
           splitLine: {
-            show: false,
+            show: true,
             distance: 0,
             length: 10
           },
           axisTick: {
-            show: false
+            show: true
           },
           axisLabel: {
-            show: false,
+            show: true,
             distance: 50
           },
           data: gaugeData,

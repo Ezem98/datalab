@@ -114,6 +114,7 @@ const calculateDistance = (player1, player2, relevantFeatures) => {
 // Función para obtener una lista de jugadores similares
 export const getSimilarPlayers = (player, players, relevantFeatures) => {
   players = players.filter(p => p.name !== player.name)
+
   // Calcula la distancia entre el jugador objetivo y cada jugador en la base de datos
   const distances = players.map(p => ({
     player: p,
@@ -123,8 +124,18 @@ export const getSimilarPlayers = (player, players, relevantFeatures) => {
   // Ordena la lista de jugadores por su distancia al jugador objetivo
   distances.sort((a, b) => a.distance - b.distance)
 
-  // Devuelve la lista de jugadores más similares
-  return distances.map(d => d.player)
+  // Calcula la distancia máxima posible en el espacio de características
+  const maxDistance = distances[distances.length - 1].distance
+
+  console.log({ maxDistance })
+
+  // Agrega el porcentaje de similitud a cada jugador en la lista
+  const similarPlayersWithPercentage = distances.map(d => ({
+    player: d.player,
+    similarityPercentage: ((maxDistance - d.distance) / maxDistance) * 100
+  }))
+
+  return similarPlayersWithPercentage
 }
 
 const calculateRating = (player, position) => {
@@ -152,13 +163,14 @@ const calculateRating = (player, position) => {
 }
 
 export const calculateAverageRating = (position, players, player) => {
-  const playersAtPosition = players.filter(p => p.position.includes(position))
+  let playersAtPosition = players.filter(p => p.position.includes(position))
+  playersAtPosition = playersAtPosition.filter(p => p.key !== player.key)
   let totalRating = 0
 
   const playerAverageRating = round(calculateRating(player, position), 2)
 
-  for (const pap of playersAtPosition) {
-    totalRating += round(calculateRating(pap, position), 2)
+  for (const pAtP of playersAtPosition) {
+    totalRating += round(calculateRating(pAtP, position), 2)
   }
 
   const averageRating = round(totalRating / playersAtPosition.length, 2)
