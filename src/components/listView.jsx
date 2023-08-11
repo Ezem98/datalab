@@ -31,12 +31,12 @@ export const ListView = ({ items, handleOnDrag }) => {
             bordered
           />
           <h4 className='uppercase tracking-normal p-0 m-0 text-quinary'>#{i + 1}</h4>
-          <section className='flex flex-col items-start justify-start w-[50%]'>
+          <section className='flex flex-col items-start justify-start w-full'>
             <section className='flex items-center justify-between w-full'>
               <section className='flex'>
                 <h4 className='uppercase flex tracking-normal p-0 m-0'>{name}</h4>
                 <Image
-                  src={flags[citizenship]}
+                  src={flags[citizenship.split(', ')[0]]}
                   alt='flag'
                   width='20'
                   height='20'

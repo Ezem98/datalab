@@ -21,7 +21,6 @@ import yellowCard from '../../assets/icons/yellow-card.png'
 import redCard from '../../assets/icons/red-card.png'
 import decreaseArrow from '../../assets/icons/decrease.png'
 import increaseArrow from '../../assets/icons/increase.png'
-import players from '../../constants/players.json'
 import { positions } from '../../constants/constants.js'
 import {
   getPlayerStatisticsPerPosition,
@@ -31,11 +30,10 @@ import {
 } from '../../utils/functions.js'
 import { useModal } from '../../hooks/useModal.jsx'
 import { useStore } from '../../store/store.js'
-// import { useRouter } from 'next/navigation'
 
 const PlayerInfo = () => {
   const player = useStore((state) => state.basePlayer)
-  const { playersToCompare, handlePlayersToCompareData, setPlayersToCompare, handleDeletePlayerToCompareData, handleVisibilityOfPlayersData } =
+  const { playersToCompare, handlePlayersToCompareData, setPlayersToCompare, handleDeletePlayerToCompareData, handleVisibilityOfPlayersData, handleUpdateData, selectedPath } =
     useStore()
   const [data, setData] = useStore((state) => [state.data, state.setData])
   const [indicator, setIndicator] = useStore((state) => [
@@ -50,13 +48,17 @@ const PlayerInfo = () => {
     state.selectedItem,
     state.setSelectedItem
   ])
+  const [database, setDatabase] = useStore((state) => [
+    state.database,
+    state.setDatabase
+  ])
   // const store = useStore()
   // const handleBasePlayerData = useStore((state) => state.handleBasePlayerData)
   const contentModal = useModal()
   // const router = useRouter()
   const items = positions.map((element, index) => {
     return {
-      key: index,
+      key: index + 1,
       name: element
     }
   })
@@ -77,7 +79,7 @@ const PlayerInfo = () => {
     true,
     true
   ])
-  const [filteredPlayers, setFilteredPlayers] = useState(players)
+  const [filteredPlayers, setFilteredPlayers] = useState(database)
 
   const footer = (
     <>
@@ -98,12 +100,12 @@ const PlayerInfo = () => {
 
   const { playerAverageRating, averageRating } = calculateAverageRating(
     selectedItem?.name ??
-      items.find((item) => item.name === position.split(', ')[0]).name,
-    players,
+      items?.find((item) => item?.name === position?.split(', ')[0])?.name,
+    database,
     player
   )
 
-  const similarPlayers = getSimilarPlayers(player, players, [
+  const similarPlayers = getSimilarPlayers(player, database, [
     ...statistics,
     'position'
   ])
@@ -121,7 +123,7 @@ const PlayerInfo = () => {
     const normalizedValue = value
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-    const filteredItems = players
+    const filteredItems = database
       .filter((p) => {
         const normalizedName = p.name
           .normalize('NFD')
@@ -149,20 +151,20 @@ const PlayerInfo = () => {
       updatedArray[index] = !visibility[index]
       setVisibility(updatedArray)
     }
-    handleVisibilityOfPlayersData(playerToCompare.name)
+    handleVisibilityOfPlayersData(playerToCompare?.name)
   }
 
   const handleDelete = (index, playerToCompare) => {
     setPlayersToCompare(undefined, index)
-    handleDeletePlayerToCompareData(playerToCompare.name)
+    handleDeletePlayerToCompareData(playerToCompare?.name)
   }
 
   const handleOnDrag = (e, name) => {
-    e.dataTransfer.setData('dropData', name)
+    e?.dataTransfer?.setData('dropData', name)
   }
 
   const handleOnDrop = (e) => {
-    const { player } = JSON.parse(e.dataTransfer.getData('dropData'))
+    const { player } = JSON.parse(e?.dataTransfer?.getData('dropData'))
     const index = findIndexOfEmptyPosition(playersToCompare)
     console.log({ index })
     setPlayersToCompare(player, index)
@@ -175,6 +177,27 @@ const PlayerInfo = () => {
 
   const handleDragOver = (e) => {
     e.preventDefault()
+  }
+
+  const handleSetItem = (item) => {
+    setSelectedItem(item?.name)
+    let playerStatistics = getPlayerStatisticsPerPosition(
+      item?.name,
+      player,
+      'primary'
+    )
+    handleUpdateData(playerStatistics?.data[0], player.name)
+    for (const pToC of playersToCompare) {
+      if (pToC) {
+        playerStatistics = getPlayerStatisticsPerPosition(
+          item?.name,
+          pToC
+        )
+        handleUpdateData(playerStatistics?.data[0], pToC.name)
+      }
+    }
+    // setSelectedDatabase(item)
+    // setSelectedPath(item.file)
   }
 
   useEffect(() => {
@@ -193,7 +216,19 @@ const PlayerInfo = () => {
     if (data.length === 0) setData(playerStatistics.data)
     if (indicator.length === 0) setIndicator(playerStatistics.indicator)
     if (statistics.length === 0) setStatistics(playerStatistics.statistics)
-  }, [selectedItem])
+  }, [])
+
+  useEffect(() => {
+    if (selectedPath) {
+      import(`../../constants${selectedPath}`)
+        .then((module) => {
+          setDatabase(module.default)
+        })
+        .catch((error) => {
+          console.error('Error importing data:', error)
+        })
+    }
+  }, [selectedPath])
 
   return (
     <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
@@ -237,63 +272,64 @@ const PlayerInfo = () => {
           <CustomDropDown
             items={items}
             ripple={false}
-            css={{ fontSize: '24px', fontWeight: 'bold' }}
+            className='text-xl'
             selectedItem={selectedItem}
-            setSelectedItem={setSelectedItem}
+            handleSetItem={handleSetItem}
           />
         </section>
       </section>
-      <section className='grid lg:grid-rows-[10%_45%_35%_10%] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
+      <section className='grid 2xl:grid-rows-[20vh_45vh_35vh_15vh] xl:grid-rows-[25vh_45vh_35vh_10vh] lg:grid-rows-[30vh_50vh_35vh_10vh] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
         {/* Player Cards */}
-        <section className='grid grid-cols-6 gap-4 rounded-lg'>
-          <PlayerCard player={player} />
-          {playersToCompare?.map((playerToCompare, i) => {
-            console.log({ playerToCompare })
-            return playerToCompare
-              ? (
-                <PlayerCard player={playerToCompare} key={i} withOptions visible={visibility[i]} handleVisible={() => handleVisible(i, playerToCompare)} handleDelete={() => handleDelete(i, playerToCompare)} />
-                )
-              : (
-                <section
-                  className='flex justify-center items-center border rounded-lg h-full w-full'
-                  key={i}
-                >
-                  {searchPlayers[i]
-                    ? (
-                      <CustomTriggerDropDown
-                        key='players'
-                        items={filteredPlayers}
-                        ripple={false}
-                        css={{ fontSize: '20px', fontWeight: 'bold', width: '50%' }}
-                        selectedItem={null}
-                        onAction={(key) => {
-                          const player = players.find(
-                            (player) => player.key.toString() === key
-                          )
-                          setPlayersToCompare(player, i)
-                          const { data } = getPlayerStatisticsPerPosition(
-                            selectedItem,
-                            player
-                          )
-                          handlePlayersToCompareData(data[0])
-                        }}
-                      >
-                        <input
-                          className='rounded-xl border-transparent bg-gray-100 px-3 py-1 text-base w-auto sm:text-xl focus:border-primary outline-none border-4 transition-all duration-500'
-                          placeholder='Search player'
-                          type='search'
-                          onChange={handleChange}
-                        />
-                      </CustomTriggerDropDown>
-                      )
-                    : (
-                      <AddButton onClick={() => handleSearchPlayer(i)} />
-                      )}
-                </section>
-                )
-          })}
-        </section>
-        <section className='grid lg:grid-cols-[30%_1fr] gap-4'>
+        <div className='2xl:overflow-hidden overflow-x-auto'>
+          <section className='grid grid-cols-6 gap-4 rounded-lg min-w-[1536px]'>
+            <PlayerCard player={player} />
+            {playersToCompare?.map((playerToCompare, i) => {
+              return playerToCompare
+                ? (
+                  <PlayerCard player={playerToCompare} key={i} withOptions visible={visibility[i]} handleVisible={() => handleVisible(i, playerToCompare)} handleDelete={() => handleDelete(i, playerToCompare)} />
+                  )
+                : (
+                  <section
+                    className='flex justify-center items-center border rounded-lg h-full w-full'
+                    key={i}
+                  >
+                    {searchPlayers[i]
+                      ? (
+                        <CustomTriggerDropDown
+                          key='players'
+                          items={filteredPlayers}
+                          ripple={false}
+                          css={{ fontSize: '20px', fontWeight: 'bold', width: '50%' }}
+                          selectedItem={null}
+                          onAction={(key) => {
+                            const player = database.find(
+                              (player) => player.key.toString() === key
+                            )
+                            setPlayersToCompare(player, i)
+                            const { data } = getPlayerStatisticsPerPosition(
+                              selectedItem,
+                              player
+                            )
+                            handlePlayersToCompareData(data[0])
+                          }}
+                        >
+                          <input
+                            className='rounded-xl border-transparent bg-gray-100 px-3 py-1 text-base w-auto sm:text-xl focus:border-primary outline-none border-4 transition-all duration-500'
+                            placeholder='Search player'
+                            type='search'
+                            onChange={handleChange}
+                          />
+                        </CustomTriggerDropDown>
+                        )
+                      : (
+                        <AddButton onClick={() => handleSearchPlayer(i)} />
+                        )}
+                  </section>
+                  )
+            })}
+          </section>
+        </div>
+        <section className='grid 2xl:grid-cols-[25%_1fr] xl:grid-cols-[30%_1fr] lg:grid-cols-[40%_1fr] gap-4'>
           {/* Similar Players */}
           <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
             <h3 className='uppercase tracking-normal'>similar players</h3>

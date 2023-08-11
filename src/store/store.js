@@ -59,6 +59,48 @@ export const useStore = create(
         const oldArray = get().data
         const newArray = oldArray.filter((d) => d.name !== name)
         set((state) => ({ data: newArray }))
+      },
+      handleUpdateData: (newData, name) => {
+        const oldArray = get().data
+        let newArray = oldArray.filter((d) => d.name !== name)
+        newArray = [...newArray, newData]
+        set((state) => ({ data: newArray }))
+      },
+      databases: [
+        {
+          key: 1,
+          name: '5 latinoamerica',
+          file: '/5Latinoamerica.json'
+        },
+        {
+          key: 2,
+          name: 'Primera',
+          file: '/Primera.json'
+        },
+        {
+          key: 3,
+          name: 'Uruguay - Chile - Paraguay - Colombia',
+          file: '/Uruguay - Chile - Paraguay - Colombia.json'
+        }
+      ],
+      setDatabases: (width, height) => {
+        set({ windowDimensions: { width, height } })
+      },
+      database: null,
+      setDatabase: (database) => {
+        set({ database })
+      },
+      selectedPath: '/5Latinoamerica.json',
+      setSelectedPath: (path) => {
+        set({ selectedPath: path })
+      },
+      selectedDatabase: {
+        key: 1,
+        name: '5 latinoamerica',
+        file: '/5Latinoamerica.json'
+      },
+      setSelectedDatabase: (database) => {
+        set({ selectedDatabase: database })
       }
     }),
     {
