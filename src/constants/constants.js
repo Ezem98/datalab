@@ -32,7 +32,7 @@ export const columns = [
     label: 'POSITION'
   },
   {
-    key: 'successfulPass',
+    key: 'passesAccuracy(%)',
     label: 'SUCCESSFUL PASS (%)'
   },
   {
@@ -352,7 +352,8 @@ export const flags = {
   Paraguay: '/flags/paraguay.svg',
   Perú: '/flags/peru.svg',
   Uruguay: '/flags/uruguay.svg',
-  Venezuela: '/flags/venezuela.svg'
+  Venezuela: '/flags/venezuela.svg',
+  Spain: '/flags/spain.svg'
 }
 
 export const weights = {

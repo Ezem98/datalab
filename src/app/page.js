@@ -1,15 +1,26 @@
 'use client'
 
 // import { RadarChart } from '../components/charts/radarChart.jsx'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { columns, colors } from '../constants/constants'
 import { Table } from '@nextui-org/react'
-import rows from '../constants/players.json'
 import { useStore } from '../store/store.js'
 import { useRouter } from 'next/navigation'
 const Home = () => {
-  const setPlayer = useStore(state => state.setBasePlayer)
+  const { setBasePlayer, selectedPath, setDatabase, database } = useStore()
   const router = useRouter()
+
+  useEffect(() => {
+    if (selectedPath) {
+      import(`../constants${selectedPath}`)
+        .then((module) => {
+          setDatabase(module.default)
+        })
+        .catch((error) => {
+          console.error('Error importing data:', error)
+        })
+    }
+  }, [selectedPath])
   return (
     <div className='container mx-auto px-8 pb-8'>
       <header className='flex justify-between items-center my-10'>
@@ -48,19 +59,19 @@ const Home = () => {
               </Table.Column>
             )}
           </Table.Header>
-          <Table.Body items={rows}>
+          <Table.Body items={database ?? []}>
             {(item) => {
               return (
                 <Table.Row
                   key={item.key} css={
-                  rows.indexOf(item) % 2 === 0
+                  database.indexOf(item) % 2 === 0
                     ? { background: 'rgb(243 244 246)' }
                     : { background: '' }
                 }
                 >
                   {(columnKey) =>
                     <Table.Cell css={{ cursor: 'pointer' }}>
-                      <button onClick={() => { setPlayer(item); router.push('/playerInfo') }} className='text-lg text-quinary'>{item[columnKey]}</button>
+                      <button onClick={() => { setBasePlayer(item); router.push('/playerInfo') }} className='text-lg text-quinary'>{item[columnKey]}</button>
                     </Table.Cell>}
                 </Table.Row>
               )

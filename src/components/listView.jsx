@@ -6,7 +6,7 @@ import { flags } from '../constants/constants.js'
 import Image from 'next/image'
 import { round } from 'lodash'
 
-export const ListView = ({ items }) => {
+export const ListView = ({ items, handleOnDrag }) => {
   const router = useRouter()
   const { setBasePlayer } = useStore()
 
@@ -21,6 +21,8 @@ export const ListView = ({ items }) => {
             router.push('/playerInfo')
           }}
           className='flex w-full justify-start items-start gap-4 text-lg text-quinary border-b-2 mb-3'
+          draggable
+          onDragStart={e => handleOnDrag(e, JSON.stringify(item))}
         >
           <Avatar
             src='/player_avatar.png'
@@ -29,12 +31,12 @@ export const ListView = ({ items }) => {
             bordered
           />
           <h4 className='uppercase tracking-normal p-0 m-0 text-quinary'>#{i + 1}</h4>
-          <section className='flex flex-col items-start justify-start w-[50%]'>
+          <section className='flex flex-col items-start justify-start w-full'>
             <section className='flex items-center justify-between w-full'>
               <section className='flex'>
                 <h4 className='uppercase flex tracking-normal p-0 m-0'>{name}</h4>
                 <Image
-                  src={flags[citizenship]}
+                  src={flags[citizenship.split(', ')[0]]}
                   alt='flag'
                   width='20'
                   height='20'

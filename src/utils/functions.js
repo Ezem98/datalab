@@ -101,11 +101,13 @@ const levenshtein = (a, b) => {
 const calculateDistance = (player1, player2, relevantFeatures) => {
   let distance = 0
   for (const feature of relevantFeatures) {
-    if (typeof player1[feature] === 'string') {
+    if (player1[feature]) {
+      if (typeof player1[feature] === 'string') {
       // Calcula la distancia de Levenshtein entre las dos cadenas
-      distance += levenshtein(player1[feature], player2[feature])
-    } else {
-      distance += Math.abs(player1[feature] - player2[feature])
+        distance += levenshtein(player1[feature], player2[feature])
+      } else {
+        distance += Math.abs(player1[feature] - player2[feature])
+      }
     }
   }
   return distance
@@ -126,8 +128,6 @@ export const getSimilarPlayers = (player, players, relevantFeatures) => {
 
   // Calcula la distancia máxima posible en el espacio de características
   const maxDistance = distances[distances.length - 1].distance
-
-  console.log({ maxDistance })
 
   // Agrega el porcentaje de similitud a cada jugador en la lista
   const similarPlayersWithPercentage = distances.map(d => ({
@@ -163,8 +163,8 @@ const calculateRating = (player, position) => {
 }
 
 export const calculateAverageRating = (position, players, player) => {
-  let playersAtPosition = players.filter(p => p.position.includes(position))
-  playersAtPosition = playersAtPosition.filter(p => p.key !== player.key)
+  let playersAtPosition = players?.filter(p => p.position.includes(position))
+  playersAtPosition = playersAtPosition?.filter(p => p.key !== player.key)
   let totalRating = 0
 
   const playerAverageRating = round(calculateRating(player, position), 2)
@@ -176,4 +176,13 @@ export const calculateAverageRating = (position, players, player) => {
   const averageRating = round(totalRating / playersAtPosition.length, 2)
 
   return { playerAverageRating, averageRating }
+}
+
+export const findIndexOfEmptyPosition = (array) => {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === null || array[i] === undefined) {
+      return i // Retorna el índice de la posición vacía
+    }
+  }
+  return -1 // Si no se encuentra ninguna posición vacía, retorna -1
 }

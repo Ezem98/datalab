@@ -37,7 +37,7 @@ const RootLayout = ({ children }) => {
   const router = useRouter()
   const { isBrowser } = useSSR()
   const [filteredPlayers, setFilteredPlayers] = useState(players)
-  const { setBasePlayer } = useStore()
+  const { setBasePlayer, databases, setSelectedPath, selectedDatabase, setSelectedDatabase } = useStore()
 
   const handleChange = (e) => {
     e.preventDefault()
@@ -58,6 +58,11 @@ const RootLayout = ({ children }) => {
       .map((p) => p)
 
     setFilteredPlayers(filteredItems)
+  }
+
+  const handleSetItem = (item) => {
+    setSelectedDatabase(item)
+    setSelectedPath(item.file)
   }
 
   return (
@@ -93,11 +98,11 @@ const RootLayout = ({ children }) => {
               </CustomTriggerDropDown>
               <div className='flex'>
                 <CustomDropDown
-                  items={[]}
+                  items={databases}
                   ripple={false}
                   css={{ fontSize: '16px', fontWeight: 'bold' }}
-                  selectedItem={null}
-                  setSelectedItem={null}
+                  selectedItem={selectedDatabase?.name}
+                  handleSetItem={handleSetItem}
                   selectText='Select database'
                 />
               </div>
