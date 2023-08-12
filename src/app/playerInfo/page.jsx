@@ -215,9 +215,9 @@ const PlayerInfo = () => {
   }, [])
 
   return (
-    <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
-      <header className='flex flex-col m-0 p-0 sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 my-4 sm:my-6 md:my-8 lg:my-10 xl:my-12'>
-        <h1 className='flex flex-grow-0 m-0 p-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal mb-4 sm:mb-0'>
+    <div className='container px-4 py-6'>
+      <header className='flex flex-col m-0 p-0 sm:flex-row justify-between items-center mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16 mb-4'>
+        <h1 className='flex flex-grow-0 m-0 p-0 text-quinary text-4xl sm:text-5xl uppercase tracking-normal'>
           overview
         </h1>
         <div className='flex flex-col sm:flex-row gap-3 m-0 p-0'>
@@ -256,13 +256,13 @@ const PlayerInfo = () => {
           <CustomDropDown
             items={items}
             ripple={false}
-            className='text-xl'
+            css={{ fontSize: '36px', fontWeight: 'bold' }}
             selectedItem={selectedItem}
             handleSetItem={handleSetItem}
           />
         </section>
       </section>
-      <section className='grid 2xl:grid-rows-[20vh_45vh_35vh_15vh] xl:grid-rows-[25vh_45vh_35vh_10vh] lg:grid-rows-[30vh_50vh_35vh_10vh] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
+      <section className='grid 2xl:grid-rows-[18vh_45vh_35vh_15vh] xl:grid-rows-[25vh_45vh_35vh_10vh] lg:grid-rows-[30vh_50vh_35vh_10vh] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
         {/* Player Cards */}
         <div className='2xl:overflow-hidden overflow-x-auto'>
           <section className='grid grid-cols-6 gap-4 rounded-lg min-w-[1536px]'>

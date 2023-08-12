@@ -21,26 +21,7 @@ const bebasNeue = Bebas_Neue({
 const theme = createTheme({
   type: 'light', // it could be "light" or "dark"
   theme: {
-    colors: {
-      primary: '#5ba176',
-      primaryShadow: '#5ba176',
-      primaryLight: '#5ba17650',
-      primaryLightContrast: '#141414',
-      secondary: '#e9aa45',
-      secondaryLight: '#e9aa4550',
-      success: '#5470C6',
-      successLight: '#5470C650',
-      quaternary: '#fafafa',
-      quinary: '#141414',
-      sectary: '#E66765',
-      sectaryLight: '#E6676550',
-      septenary: '#8A2BE2',
-      septenaryLight: '#8A2BE250',
-      eightieth: '#FF9966',
-      eightiethLight: '#FF996650',
-      gradient: 'linear-gradient(112deg, $blue100 -25%, $pink500 -10%, $purple500 80%)',
-      myColor: '#ff4ecd'
-    },
+    colors,
     space: {},
     fonts: {}
   }
@@ -100,9 +81,9 @@ const RootLayout = ({ children }) => {
       <body className={bebasNeue.className}>
         {isBrowser && (
           <>
-            <header className='flex justify-between items-center px-4 sm:px-8 pt-4 sm:pt-8'>
+            <header className='flex justify-between items-center px-20 sm:px-8 pt-4 sm:pt-8'>
               <Link href='/'>
-                <h1 className='flex flex-grow-0 text-primary text-xl sm:text-2xl tracking-normal cursor-pointer'>
+                <h1 className='flex flex-grow-0 text-primary p-0 m-0 text-xl sm:text-2xl tracking-normal cursor-pointer'>
                   Datamoroni
                 </h1>
               </Link>
