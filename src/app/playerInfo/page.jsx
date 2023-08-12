@@ -88,6 +88,8 @@ const PlayerInfo = () => {
     </>
   )
 
+  const colors = ['secondary', 'tertiary', 'sectary', 'septenary', 'eightieth']
+
   const { position, yellowCards, redCards, matchesPlayed, minutesPlayed } =
     player
 
@@ -163,7 +165,8 @@ const PlayerInfo = () => {
     setPlayersToCompare(player, index)
     const { data } = getPlayerStatisticsPerPosition(
       selectedItem,
-      player
+      player,
+      colors[index]
     )
     handlePlayersToCompareData(data[0])
   }
@@ -263,11 +266,11 @@ const PlayerInfo = () => {
         {/* Player Cards */}
         <div className='2xl:overflow-hidden overflow-x-auto'>
           <section className='grid grid-cols-6 gap-4 rounded-lg min-w-[1536px]'>
-            <PlayerCard player={player} />
+            <PlayerCard player={player} color='primary' />
             {playersToCompare?.map((playerToCompare, i) => {
               return playerToCompare
                 ? (
-                  <PlayerCard player={playerToCompare} key={i} withOptions visible={visibility[i]} handleVisible={() => handleVisible(i, playerToCompare)} handleDelete={() => handleDelete(i, playerToCompare)} />
+                  <PlayerCard player={playerToCompare} key={i} color={colors[i]} withOptions visible={visibility[i]} handleVisible={() => handleVisible(i, playerToCompare)} handleDelete={() => handleDelete(i, playerToCompare)} />
                   )
                 : (
                   <section
@@ -283,13 +286,16 @@ const PlayerInfo = () => {
                           css={{ fontSize: '20px', fontWeight: 'bold', width: '50%' }}
                           selectedItem={null}
                           onAction={(key) => {
+                            console.log({ i })
                             const player = database.find(
                               (player) => player.key.toString() === key
                             )
                             setPlayersToCompare(player, i)
+                            console.log('hola')
                             const { data } = getPlayerStatisticsPerPosition(
                               selectedItem,
-                              player
+                              player,
+                              colors[i]
                             )
                             handlePlayersToCompareData(data[0])
                           }}

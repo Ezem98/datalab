@@ -2,19 +2,20 @@ import { positionStatistics, statistics, colors, weights } from '../constants/co
 import { round } from 'lodash'
 
 export const getPlayerStatisticsPerPosition = (position, player, color) => {
+  console.log({ color })
   if (!player) return null
   const labels = positionStatistics[position]
   const data = [{
     value: [],
     name: player?.name,
     lineStyle: {
-      color: color === 'primary' ? colors.primary : colors.secondary
+      color: colors[color] // color === 'primary' ? colors.primary : colors.secondary
     },
     areaStyle: {
-      color: color === 'primary' ? colors.primaryLight : colors.secondaryLight
+      color: colors[`${colors}Light`] // color === 'primary' ? colors.primaryLight : colors.secondaryLight
     },
     itemStyle: {
-      color: color === 'primary' ? colors.primary : colors.secondary
+      color: colors[color] // color === 'primary' ? colors.primary : colors.secondary
     }
   }]
   const indicator = []
