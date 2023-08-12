@@ -5,9 +5,16 @@ export const colors = {
   primaryLightContrast: '#141414',
   secondary: '#e9aa45',
   secondaryLight: '#e9aa4550',
-  tertiary: '#000000',
+  tertiary: '#5470C6',
+  tertiaryLight: '#5470C650',
   quaternary: '#fafafa',
-  quinary: '#141414'
+  quinary: '#141414',
+  sectary: '#E66765',
+  sectaryLight: '#E6676550',
+  septenary: '#8A2BE2',
+  septenaryLight: '#8A2BE250',
+  eightieth: '#FF9966',
+  eightiethLight: '#FF996650'
 }
 
 export const columns = [

@@ -16,7 +16,13 @@ module.exports = {
         secondaryLight: '#e9aa4550',
         tertiary: '#000000',
         quaternary: '#fafafa',
-        quinary: '#141414'
+        quinary: '#141414',
+        sectary: '#E66765',
+        sectaryLight: '#E6676550',
+        septenary: '#8A2BE2',
+        septenaryLight: '#8A2BE250',
+        eightieth: '#FF9966',
+        eightiethLight: '#FF996650'
       },
       colors: {
         primary: '#5ba176',
@@ -27,7 +33,13 @@ module.exports = {
         secondaryLight: '#e9aa4550',
         tertiary: '#000000',
         quaternary: '#fafafa',
-        quinary: '#141414'
+        quinary: '#141414',
+        sectary: '#E66765',
+        sectaryLight: '#E6676550',
+        septenary: '#8A2BE2',
+        septenaryLight: '#8A2BE250',
+        eightieth: '#FF9966',
+        eightiethLight: '#FF996650'
       }
     }
   },
