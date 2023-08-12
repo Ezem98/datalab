@@ -33,7 +33,7 @@ import { useStore } from '../../store/store.js'
 
 const PlayerInfo = () => {
   const player = useStore((state) => state.basePlayer)
-  const { playersToCompare, handlePlayersToCompareData, setPlayersToCompare, handleDeletePlayerToCompareData, handleVisibilityOfPlayersData, handleUpdateData, selectedPath } =
+  const { playersToCompare, handlePlayersToCompareData, setPlayersToCompare, handleDeletePlayerToCompareData, handleVisibilityOfPlayersData, handleUpdateData, database } =
     useStore()
   const [data, setData] = useStore((state) => [state.data, state.setData])
   const [indicator, setIndicator] = useStore((state) => [
@@ -48,14 +48,7 @@ const PlayerInfo = () => {
     state.selectedItem,
     state.setSelectedItem
   ])
-  const [database, setDatabase] = useStore((state) => [
-    state.database,
-    state.setDatabase
-  ])
-  // const store = useStore()
-  // const handleBasePlayerData = useStore((state) => state.handleBasePlayerData)
   const contentModal = useModal()
-  // const router = useRouter()
   const items = positions.map((element, index) => {
     return {
       key: index + 1,
@@ -217,18 +210,6 @@ const PlayerInfo = () => {
     if (indicator.length === 0) setIndicator(playerStatistics.indicator)
     if (statistics.length === 0) setStatistics(playerStatistics.statistics)
   }, [])
-
-  useEffect(() => {
-    if (selectedPath) {
-      import(`../../constants${selectedPath}`)
-        .then((module) => {
-          setDatabase(module.default)
-        })
-        .catch((error) => {
-          console.error('Error importing data:', error)
-        })
-    }
-  }, [selectedPath])
 
   return (
     <div className='container px-4 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16'>
