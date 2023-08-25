@@ -321,7 +321,7 @@ export const positionStatistics = {
     'shotsPerMatch',
     'goalsPerMatch',
     'xA/90',
-    'shotsOnTargetAccuracy(%)',
+    'shootingAccuracy(%)',
     'goalsConversion(%)'
   ],
   LWF: [
