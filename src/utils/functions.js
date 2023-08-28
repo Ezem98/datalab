@@ -116,7 +116,9 @@ const calculateDistance = (player1, player2, relevantFeatures) => {
 
 // Función para obtener una lista de jugadores similares
 export const getSimilarPlayers = (player, players, relevantFeatures) => {
+  const playerPosition = player.position.split(', ')[0]
   players = players.filter(p => p.name !== player.name)
+  players = players.filter(p => p.position.includes(playerPosition))
 
   // Calcula la distancia entre el jugador objetivo y cada jugador en la base de datos
   const distances = players.map(p => ({
