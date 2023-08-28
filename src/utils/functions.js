@@ -1,5 +1,6 @@
 import { positionStatistics, statistics, colors, weights } from '../constants/constants'
 import { round } from 'lodash'
+import jStat from 'jstat'
 
 export const getPlayerStatisticsPerPosition = (position, player, color) => {
   if (!player) return null
@@ -8,13 +9,13 @@ export const getPlayerStatisticsPerPosition = (position, player, color) => {
     value: [],
     name: player?.name,
     lineStyle: {
-      color: color === 'primary' ? colors.primary : colors.secondary
+      color: colors[color] // color === 'primary' ? colors.primary : colors.secondary
     },
     areaStyle: {
-      color: color === 'primary' ? colors.primaryLight : colors.secondaryLight
+      color: colors[`${colors}Light`] // color === 'primary' ? colors.primaryLight : colors.secondaryLight
     },
     itemStyle: {
-      color: color === 'primary' ? colors.primary : colors.secondary
+      color: colors[color] // color === 'primary' ? colors.primary : colors.secondary
     }
   }]
   const indicator = []
@@ -185,4 +186,59 @@ export const findIndexOfEmptyPosition = (array) => {
     }
   }
   return -1 // Si no se encuentra ninguna posición vacía, retorna -1
+}
+
+const getFunctionFParameters = (players, metric) => {
+  let average = 0; let standardDeviation = 0
+  for (const player of players) {
+    average += player[metric]
+  }
+
+  average = average / players.length
+
+  for (const player of players) {
+    standardDeviation += Math.pow(player[metric] - average, 2)
+  }
+
+  standardDeviation = standardDeviation / (players.length - 1)
+
+  standardDeviation = Math.sqrt(standardDeviation)
+
+  return { average, standardDeviation }
+}
+
+const functionF = (x, mu, sigma) => {
+  const exponent = (-1 / 2) * (((x - mu) / sigma) ** 2)
+
+  const coefficient = 1 / (Math.sqrt(2 * Math.PI * (sigma ** 2)))
+
+  return coefficient * Math.exp(exponent)
+}
+
+const getPercentile = (x, mu, sigma) => {
+  const z = (x - mu) / sigma
+
+  const percentile = jStat.normal.cdf(z, 0, 1)
+
+  return percentile
+}
+
+export const getNormalDistributionData = (player, players, metric, position) => {
+  const playersAtPosition = players?.filter(p => p.position.includes(position))
+
+  const { average, standardDeviation } = getFunctionFParameters(playersAtPosition, metric)
+
+  const normalData = playersAtPosition.map(player => {
+    const metricValue = player[metric]
+    const calculatedValue = functionF(metricValue, average, standardDeviation)
+    return [metricValue, calculatedValue]
+  })
+
+  normalData.sort((a, b) => a[0] - b[0])
+
+  const percentile = getPercentile(player[metric], average, standardDeviation)
+
+  const metricValue = player[metric]
+
+  return { normalData, percentile, metricValue, metricName: metric }
 }

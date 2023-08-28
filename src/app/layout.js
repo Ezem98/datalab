@@ -81,9 +81,9 @@ const RootLayout = ({ children }) => {
       <body className={bebasNeue.className}>
         {isBrowser && (
           <>
-            <header className='flex justify-between items-center px-4 sm:px-8 pt-4 sm:pt-8'>
+            <header className='flex justify-between items-center px-20 sm:px-8 pt-4 sm:pt-8'>
               <Link href='/'>
-                <h1 className='flex flex-grow-0 text-primary text-xl sm:text-2xl tracking-normal cursor-pointer'>
+                <h1 className='flex flex-grow-0 text-primary p-0 m-0 text-xl sm:text-2xl tracking-normal cursor-pointer'>
                   Datamoroni
                 </h1>
               </Link>
