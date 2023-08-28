@@ -18,7 +18,7 @@ export const PlayerCard = ({ player, withOptions = false, visible, handleVisible
         />
         <section className='flex justify-between items-center'>
           <Image
-            src={flags[citizenship.split(', ')[0]]}
+            src={flags[citizenship?.split(', ')[0]]}
             alt='flag'
             width='20'
             height='20'

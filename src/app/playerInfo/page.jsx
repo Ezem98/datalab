@@ -105,10 +105,7 @@ const PlayerInfo = () => {
     player
   )
 
-  const similarPlayers = getSimilarPlayers(player, database, [
-    ...statistics,
-    'position'
-  ])
+  const similarPlayers = getSimilarPlayers(player, database, statistics)
 
   const handleZoomIn = async (title, content) => {
     setModalTitle(title)
@@ -199,14 +196,14 @@ const PlayerInfo = () => {
 
   useEffect(() => {
     setSelectedItem(
-      items.find((item) => item.name === position.split(', ')[0])?.name
+      items.find((item) => item.name === position?.split(', ')[0])?.name
     )
   }, [])
 
   useEffect(() => {
     const playerStatistics = getPlayerStatisticsPerPosition(
       selectedItem ??
-        items.find((item) => item.name === position.split(', ')[0])?.name,
+        items.find((item) => item.name === position?.split(', ')[0])?.name,
       player,
       'primary'
     )
