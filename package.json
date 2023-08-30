@@ -17,6 +17,7 @@
     "echarts-for-react": "^3.0.2",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
+    "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
     "next": "^13.4.9",
     "next-images": "^1.8.5",

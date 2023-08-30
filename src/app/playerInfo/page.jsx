@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
 import { MdAddChart as Add } from 'react-icons/md'
-// import { PDFViewer } from '@react-pdf/renderer'
+import { PDFViewer } from '@react-pdf/renderer'
 import { RadarChart } from '../../components/charts/radarChart.jsx'
 import { RingGaugeChart } from '../../components/charts/ringGaugeChart.jsx'
 import { GradeGaugeChart } from '../../components/charts/gradeGaugeChart.jsx'
@@ -14,7 +14,7 @@ import { CustomTriggerDropDown } from '../../components/dropdown/customTriggerDr
 import { ListView } from '../../components/listView.jsx'
 import { PlayerCard } from '../../components/playerCard.jsx'
 import { AddButton } from '../../components/addButton.jsx'
-// import { MyDocument } from '../../../components/documentPDF.jsx'
+import { DocumentPDF } from '../../components/documentPDF.jsx'
 import { ContentModal } from '../../components/contentModal.jsx'
 import { IconButton } from '../../components/iconButton.jsx'
 import yellowCard from '../../assets/icons/yellow-card.png'
@@ -80,6 +80,9 @@ const PlayerInfo = () => {
     true
   ])
   const [filteredPlayers, setFilteredPlayers] = useState(database)
+  const radarChartRef = useRef(null)
+  const similarPlayersRef = useRef(null)
+  const normalDistributionChartsRef = useRef(null)
 
   const footer = (
     <>
@@ -110,7 +113,13 @@ const PlayerInfo = () => {
     'position'
   ])
 
-  const handleZoomIn = async (title, content) => {
+  const handleZoomIn = (title, content) => {
+    setModalTitle(title)
+    setModalContent(content)
+    contentModal?.openModal()
+  }
+
+  const handleViewPDF = (title, content) => {
     setModalTitle(title)
     setModalContent(content)
     contentModal?.openModal()
@@ -237,7 +246,18 @@ const PlayerInfo = () => {
           overview
         </h1>
         <div className='flex flex-col sm:flex-row gap-3 m-0 p-0'>
-          <Button color='primary' className='mb-2 sm:mb-0'>
+          <Button
+            color='primary'
+            className='mb-2 sm:mb-0'
+            onClick={() => {
+              const content = (
+                <PDFViewer height='100%' width='100%'>
+                  <DocumentPDF radarChartRef={radarChartRef} similarPlayersRef={similarPlayersRef} normalDistributionChartsRef={normalDistributionChartsRef} player={player} />
+                </PDFViewer>
+              )
+              handleViewPDF('Create report', content)
+            }}
+          >
             Create report
           </Button>
           {/* <Button
@@ -333,7 +353,7 @@ const PlayerInfo = () => {
           {/* Similar Players */}
           <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
             <h3 className='uppercase tracking-normal'>similar players</h3>
-            <ListView items={similarPlayers.slice(0, 10)} handleOnDrag={handleOnDrag} />
+            <ListView similarPlayersRef={similarPlayersRef} items={similarPlayers.slice(0, 10)} handleOnDrag={handleOnDrag} />
           </section>
           {/* Statistics per position */}
           <section className='border p-4 flex flex-col items-start rounded-lg' onDrop={handleOnDrop} onDragOver={handleDragOver}>
@@ -361,6 +381,7 @@ const PlayerInfo = () => {
                       fontSize={14}
                       width='100%'
                       height='100%'
+                      chartRef={radarChartRef}
                     />
                   )}
               >
@@ -371,8 +392,9 @@ const PlayerInfo = () => {
               </IconButton>
             </section>
             <RadarChart
+              chartRef={radarChartRef}
               id='position'
-              radius='90%'
+              radius='80%'
               indicator={indicator}
               data={data}
               width='100%'
@@ -550,10 +572,6 @@ const PlayerInfo = () => {
           </section>
         </section>
       </section>
-
-      {/* <PDFViewer>
-        <MyDocument />
-      </PDFViewer> */}
       <ContentModal
         visible={contentModal?.visible}
         title={modalTitle}
