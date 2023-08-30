@@ -8,8 +8,7 @@ import { colors } from '../constants/constants.js'
 import Link from 'next/link'
 import { CustomTriggerDropDown } from '../components/dropdown/customTriggerDropDown.jsx'
 import { CustomDropDown } from '../components/dropdown/customDropDown.jsx'
-import { useState } from 'react'
-import players from '../constants/players.json'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore } from '../store/store.js'
 
@@ -36,8 +35,8 @@ const theme = createTheme({
 const RootLayout = ({ children }) => {
   const router = useRouter()
   const { isBrowser } = useSSR()
-  const [filteredPlayers, setFilteredPlayers] = useState(players)
-  const { setBasePlayer, databases, setSelectedPath, selectedDatabase, setSelectedDatabase } = useStore()
+  const { setBasePlayer, databases, setSelectedPath, selectedDatabase, setSelectedDatabase, selectedPath, setDatabase, database } = useStore()
+  const [filteredPlayers, setFilteredPlayers] = useState(database)
 
   const handleChange = (e) => {
     e.preventDefault()
@@ -46,7 +45,7 @@ const RootLayout = ({ children }) => {
     const normalizedValue = value
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-    const filteredItems = players
+    const filteredItems = database
       .filter((p) => {
         const normalizedName = p.name
           .normalize('NFD')
@@ -65,14 +64,26 @@ const RootLayout = ({ children }) => {
     setSelectedPath(item.file)
   }
 
+  useEffect(() => {
+    if (selectedPath) {
+      import(`../../constants${selectedPath}`)
+        .then((module) => {
+          setDatabase(module.default)
+        })
+        .catch((error) => {
+          console.error('Error importing data:', error)
+        })
+    }
+  }, [selectedPath])
+
   return (
     <html lang='en'>
       <body className={bebasNeue.className}>
         {isBrowser && (
           <>
-            <header className='flex justify-between items-center px-4 sm:px-8 pt-4 sm:pt-8'>
+            <header className='flex justify-between items-center px-20 sm:px-8 pt-4 sm:pt-8'>
               <Link href='/'>
-                <h1 className='flex flex-grow-0 text-primary text-xl sm:text-2xl tracking-normal cursor-pointer'>
+                <h1 className='flex flex-grow-0 text-primary p-0 m-0 text-xl sm:text-2xl tracking-normal cursor-pointer'>
                   Datamoroni
                 </h1>
               </Link>
@@ -83,7 +94,7 @@ const RootLayout = ({ children }) => {
                 css={{ fontSize: '20px', fontWeight: 'bold' }}
                 selectedItem={null}
                 onAction={(key) => {
-                  const player = players.find(player => player.key.toString() === key)
+                  const player = database.find(player => player.key.toString() === key)
                   setBasePlayer(player)
                   router.push('/playerInfo')
                 }}

@@ -40,6 +40,9 @@ export const RadarChart = ({ id, radius, data, indicator, axisLabel = false, sym
           tooltip: {
             trigger: 'item'
           },
+          emphasis: {
+            focus: 'series'
+          },
           // Define the data for each series
           data,
           symbolSize

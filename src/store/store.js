@@ -101,6 +101,37 @@ export const useStore = create(
       },
       setSelectedDatabase: (database) => {
         set({ selectedDatabase: database })
+      },
+      tabs: [
+        {
+          key: 0,
+          name: 'Player info',
+          selected: true
+        },
+        {
+          key: 1,
+          name: 'Distributions & Percentiles',
+          selected: false
+        }
+      ],
+      handleSelectTab: (newSelectedTab) => {
+        let foundSelected = false
+
+        const updatedTabs = get().tabs.map(tab => {
+          if (tab.selected) {
+            if (!foundSelected) {
+              return { ...tab, selected: false }
+            }
+            foundSelected = true
+          }
+          if (tab.name === newSelectedTab.name) {
+            return { ...tab, selected: true }
+          }
+
+          return tab
+        })
+
+        set({ tabs: updatedTabs })
       }
     }),
     {
