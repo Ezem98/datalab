@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { AiOutlineZoomIn as Zoom } from 'react-icons/ai'
 import { MdAddChart as Add } from 'react-icons/md'
-// import { PDFViewer } from '@react-pdf/renderer'
+import { PDFViewer } from '@react-pdf/renderer'
 import { RadarChart } from '../../components/charts/radarChart.jsx'
 import { NormalDistributionChart } from '../../components/charts/normalDistributionChart.jsx'
 import { GradeGaugeChart } from '../../components/charts/gradeGaugeChart.jsx'
@@ -14,7 +14,7 @@ import { CustomTriggerDropDown } from '../../components/dropdown/customTriggerDr
 import { ListView } from '../../components/listView.jsx'
 import { PlayerCard } from '../../components/playerCard.jsx'
 import { AddButton } from '../../components/addButton.jsx'
-// import { MyDocument } from '../../../components/documentPDF.jsx'
+import { DocumentPDF } from '../../components/documentPDF.jsx'
 import { ContentModal } from '../../components/contentModal.jsx'
 import { IconButton } from '../../components/iconButton.jsx'
 import yellowCard from '../../assets/icons/yellow-card.png'
@@ -78,6 +78,9 @@ const PlayerInfo = () => {
   ])
   const [visibility, setVisibility] = useState([true, true, true, true, true])
   const [filteredPlayers, setFilteredPlayers] = useState(database)
+  const radarChartRef = useRef(null)
+  const similarPlayersRef = useRef(null)
+  const normalDistributionChartsRef = useRef(null)
 
   const footer = (
     <>
@@ -107,7 +110,13 @@ const PlayerInfo = () => {
 
   const similarPlayers = getSimilarPlayers(player, database, statistics)
 
-  const handleZoomIn = async (title, content) => {
+  const handleZoomIn = (title, content) => {
+    setModalTitle(title)
+    setModalContent(content)
+    contentModal?.openModal()
+  }
+
+  const handleViewPDF = (title, content) => {
     setModalTitle(title)
     setModalContent(content)
     contentModal?.openModal()
@@ -219,7 +228,18 @@ const PlayerInfo = () => {
           overview
         </h1>
         <div className='flex flex-col sm:flex-row gap-3 m-0 p-0'>
-          <Button color='primary' className='mb-2 sm:mb-0'>
+          <Button
+            color='primary'
+            className='mb-2 sm:mb-0'
+            onClick={() => {
+              const content = (
+                <PDFViewer height='100%' width='100%'>
+                  <DocumentPDF radarChartRef={radarChartRef} similarPlayersRef={similarPlayersRef} normalDistributionChartsRef={normalDistributionChartsRef} player={player} />
+                </PDFViewer>
+              )
+              handleViewPDF('Create report', content)
+            }}
+          >
             Create report
           </Button>
           {/* <Button
@@ -261,7 +281,7 @@ const PlayerInfo = () => {
           })}
         </ul>
       </section>
-      {tabs[0].selected &&
+{tabs[0].selected &&
         <div className='border-t border-quinary m-0 p-0 w-fit mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
           <section className='flex flex-col-reverse lg:flex-row justify-between items-center'>
             <h2 className='text-quinary uppercase tracking-tight !p-0 !m-0 mb-4 lg:mb-0 lg:order-1'>
@@ -277,126 +297,108 @@ const PlayerInfo = () => {
               />
             </section>
           </section>
-          <section className='grid 2xl:grid-rows-[18vh_45vh_35vh_15vh] xl:grid-rows-[25vh_45vh_35vh_10vh] lg:grid-rows-[30vh_50vh_35vh_10vh] gap-4'>
-            {/* Player Cards */}
-            <div className='2xl:overflow-hidden overflow-x-auto'>
-              <section className='grid grid-cols-6 gap-4 rounded-lg min-w-[1536px]'>
-                <PlayerCard player={player} color='primary' />
-                {playersToCompare?.map((playerToCompare, i) => {
-                  return playerToCompare
-                    ? (
-                      <PlayerCard
-                        player={playerToCompare}
-                        key={i}
-                        color={colors[i]}
-                        withOptions
-                        visible={visibility[i]}
-                        handleVisible={() => handleVisible(i, playerToCompare)}
-                        handleDelete={() => handleDelete(i, playerToCompare)}
-                      />
-                      )
-                    : (
-                      <section
-                        className='flex justify-center items-center border rounded-lg h-full w-full'
-                        key={i}
-                      >
-                        {searchPlayers[i]
-                          ? (
-                            <CustomTriggerDropDown
-                              key='players'
-                              items={filteredPlayers}
-                              ripple={false}
-                              css={{
-                                fontSize: '20px',
-                                fontWeight: 'bold',
-                                width: '50%'
-                              }}
-                              selectedItem={null}
-                              onAction={(key) => {
-                                const player = database.find(
-                                  (player) => player.key.toString() === key
-                                )
-                                setPlayersToCompare(player, i)
-                                const { data } = getPlayerStatisticsPerPosition(
-                                  selectedItem,
-                                  player,
-                                  colors[i]
-                                )
-                                handlePlayersToCompareData(data[0])
-                              }}
-                            >
-                              <input
-                                className='rounded-xl border-transparent bg-gray-100 px-3 py-1 text-base w-auto sm:text-xl focus:border-primary outline-none border-4 transition-all duration-500'
-                                placeholder='Search player'
-                                type='search'
-                                onChange={handleChange}
-                              />
-                            </CustomTriggerDropDown>
-                            )
-                          : (
-                            <AddButton onClick={() => handleSearchPlayer(i)} />
-                            )}
-                      </section>
-                      )
-                })}
-              </section>
-            </div>
-            <section className='grid 2xl:grid-cols-[25%_1fr] xl:grid-cols-[30%_1fr] lg:grid-cols-[40%_1fr] gap-4'>
-              {/* Similar Players */}
-              <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
-                <h3 className='uppercase tracking-normal'>similar players</h3>
-                <ListView
-                  items={similarPlayers.slice(0, 10)}
-                  handleOnDrag={handleOnDrag}
-                />
-              </section>
-              {/* Statistics per position */}
-              <section
-                className='border p-4 flex flex-col items-start rounded-lg'
-                onDrop={handleOnDrop}
-                onDragOver={handleDragOver}
-              >
-                <section className='flex w-full relative'>
-                  <IconButton handleClick={() => {}}>
-                    <Add
-                      fontSize='26px'
-                      className='absolute left-0 top-1 cursor-pointer hover:scale-110'
-                    />
-                  </IconButton>
-                  <h3 className='flex-1 uppercase tracking-normal text-center'>
-                    statistics per position
-                  </h3>
-                  <IconButton
-                    handleClick={() =>
-                      handleZoomIn(
-                        'statistics per position',
-                        <RadarChart
-                          id='position'
-                          radius='90%'
-                          indicator={indicator}
-                          data={data}
-                          axisLabel
-                          symbolSize={10}
-                          fontSize={14}
-                          width='100%'
-                          height='100%'
-                        />
-                      )}
+      <section className='grid 2xl:grid-rows-[20vh_45vh_35vh_15vh] xl:grid-rows-[25vh_45vh_35vh_10vh] lg:grid-rows-[30vh_50vh_35vh_10vh] gap-4 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
+        {/* Player Cards */}
+        <div className='2xl:overflow-hidden overflow-x-auto'>
+          <section className='grid grid-cols-6 gap-4 rounded-lg min-w-[1536px]'>
+            <PlayerCard player={player} />
+            {playersToCompare?.map((playerToCompare, i) => {
+              return playerToCompare
+                ? (
+                  <PlayerCard player={playerToCompare} key={i} withOptions visible={visibility[i]} handleVisible={() => handleVisible(i, playerToCompare)} handleDelete={() => handleDelete(i, playerToCompare)} />
+                  )
+                : (
+                  <section
+                    className='flex justify-center items-center border rounded-lg h-full w-full'
+                    key={i}
                   >
-                    <Zoom
-                      fontSize='26px'
-                      className='absolute right-0 top-1 cursor-pointer hover:scale-110'
-                    />
-                  </IconButton>
-                </section>
-                <RadarChart
-                  id='position'
-                  radius='90%'
-                  indicator={indicator}
-                  data={data}
-                  width='100%'
-                  height='100%'
+                    {searchPlayers[i]
+                      ? (
+                        <CustomTriggerDropDown
+                          key='players'
+                          items={filteredPlayers}
+                          ripple={false}
+                          css={{ fontSize: '20px', fontWeight: 'bold', width: '50%' }}
+                          selectedItem={null}
+                          onAction={(key) => {
+                            const player = database.find(
+                              (player) => player.key.toString() === key
+                            )
+                            setPlayersToCompare(player, i)
+                            const { data } = getPlayerStatisticsPerPosition(
+                              selectedItem,
+                              player
+                            )
+                            handlePlayersToCompareData(data[0])
+                          }}
+                        >
+                          <input
+                            className='rounded-xl border-transparent bg-gray-100 px-3 py-1 text-base w-auto sm:text-xl focus:border-primary outline-none border-4 transition-all duration-500'
+                            placeholder='Search player'
+                            type='search'
+                            onChange={handleChange}
+                          />
+                        </CustomTriggerDropDown>
+                        )
+                      : (
+                        <AddButton onClick={() => handleSearchPlayer(i)} />
+                        )}
+                  </section>
+                  )
+            })}
+          </section>
+        </div>
+        <section className='grid 2xl:grid-cols-[25%_1fr] xl:grid-cols-[30%_1fr] lg:grid-cols-[40%_1fr] gap-4'>
+          {/* Similar Players */}
+          <section className='border p-4 flex flex-col items-center rounded-lg overflow-y-auto'>
+            <h3 className='uppercase tracking-normal'>similar players</h3>
+            <ListView similarPlayersRef={similarPlayersRef} items={similarPlayers.slice(0, 10)} handleOnDrag={handleOnDrag} />
+          </section>
+          {/* Statistics per position */}
+          <section className='border p-4 flex flex-col items-start rounded-lg' onDrop={handleOnDrop} onDragOver={handleDragOver}>
+            <section className='flex w-full relative'>
+              <IconButton handleClick={() => {}}>
+                <Add
+                  fontSize='26px'
+                  className='absolute left-0 top-1 cursor-pointer hover:scale-110'
                 />
+              </IconButton>
+              <h3 className='flex-1 uppercase tracking-normal text-center'>
+                statistics per position
+              </h3>
+              <IconButton
+                handleClick={() =>
+                  handleZoomIn(
+                    'statistics per position',
+                    <RadarChart
+                      id='position'
+                      radius='90%'
+                      indicator={indicator}
+                      data={data}
+                      axisLabel
+                      symbolSize={10}
+                      fontSize={14}
+                      width='100%'
+                      height='100%'
+                      chartRef={radarChartRef}
+                    />
+                  )}
+              >
+                <Zoom
+                  fontSize='26px'
+                  className='absolute right-0 top-1 cursor-pointer hover:scale-110'
+                />
+              </IconButton>
+            </section>
+            <RadarChart
+              chartRef={radarChartRef}
+              id='position'
+              radius='80%'
+              indicator={indicator}
+              data={data}
+              width='100%'
+              height='100%'
+            />
               </section>
             </section>
             <section className='grid lg:grid-cols-2 gap-4'>
@@ -552,6 +554,8 @@ const PlayerInfo = () => {
               </section>
             </section>
           </section>
+        </section>
+      </section>
         </div>}
       {tabs[1].selected &&
         <div className='flex flex-col w-auto border-t border-quinary m-0 p-0 mx-2 sm:mx-4 md:mx-8 lg:mx-12 xl:mx-16'>
